@@ -1,50 +1,21 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
-// Mock data - Substitua por dados reais do Supabase
-const mockClientes = [
-  { id: '1', nome: 'Cliente A', email: 'clientea@email.com' },
-  { id: '2', nome: 'Cliente B', email: 'clienteb@email.com' },
-  { id: '3', nome: 'Cliente C', email: 'clientec@email.com' },
-];
+interface Cliente {
+  id: string;
+  nome: string;
+  email: string;
+}
 
-const mockLogs = [
-  {
-    id: '1',
-    cliente_nome: 'Cliente A',
-    status: 'sucesso' as const,
-    detalhes: 'Relatório gerado com 156 lojas',
-    total_lojas: 156,
-    executado_em: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
-    origem: 'GitHub Actions'
-  },
-  {
-    id: '2', 
-    cliente_nome: 'Cliente B',
-    status: 'erro' as const,
-    detalhes: 'Falha no login - verifique credenciais',
-    total_lojas: 0,
-    executado_em: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 horas atrás
-    origem: 'GitHub Actions'
-  },
-  {
-    id: '3',
-    cliente_nome: 'Cliente C', 
-    status: 'sucesso' as const,
-    detalhes: 'Relatório gerado com 89 lojas',
-    total_lojas: 89,
-    executado_em: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 horas atrás
-    origem: 'Execução Local'
-  },
-  {
-    id: '4',
-    cliente_nome: 'Cliente A',
-    status: 'sem_dados' as const,
-    detalhes: 'Nenhuma loja encontrada no sistema',
-    total_lojas: 0,
-    executado_em: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), // 8 horas atrás
-    origem: 'GitHub Actions'
-  }
-];
+interface LogExecucao {
+  id: string;
+  cliente_nome: string;
+  status: 'sucesso' | 'erro' | 'sem_dados';
+  detalhes: string | null;
+  total_lojas: number;
+  executado_em: string;
+  origem: string;
+}
 
 interface DashboardStats {
   totalLojas: number;
@@ -71,52 +42,97 @@ export function useDashboardData(clienteId: string | null = null) {
     erros: 0
   });
   
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [logs, setLogs] = useState<LogExecucao[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simular carregamento de dados
     const loadData = async () => {
       setLoading(true);
       
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Filtrar logs por cliente se selecionado
-      const filteredLogs = clienteId 
-        ? mockLogs.filter(log => log.cliente_nome.includes(clienteId === '1' ? 'Cliente A' : clienteId === '2' ? 'Cliente B' : 'Cliente C'))
-        : mockLogs;
-      
-      // Calcular estatísticas baseadas nos logs filtrados
-      const sucessos = filteredLogs.filter(log => log.status === 'sucesso').length;
-      const erros = filteredLogs.filter(log => log.status === 'erro').length;
-      const totalLojas = filteredLogs.reduce((acc, log) => acc + log.total_lojas, 0);
-      
-      // Mock de dados de sincronização
-      const sincronizadas = Math.floor(totalLojas * 0.85); // 85% sincronizadas
-      const atrasadas = totalLojas - sincronizadas;
-      
-      const hoje = new Date().toDateString();
-      const executacoesHoje = filteredLogs.filter(log => 
-        new Date(log.executado_em).toDateString() === hoje
-      ).length;
-      
-      const ultimaExecucao = filteredLogs.length > 0 
-        ? new Date(Math.max(...filteredLogs.map(log => new Date(log.executado_em).getTime())))
-        : new Date();
-      
-      setStats({
-        totalLojas,
-        totalSincronizadas: sincronizadas,
-        totalAtrasadas: atrasadas,
-        percentualSincronizacao: totalLojas > 0 ? (sincronizadas / totalLojas) * 100 : 0,
-        ultimaExecucao: ultimaExecucao.toLocaleString('pt-BR'),
-        totalClientes: clienteId ? 1 : mockClientes.length,
-        executacoesHoje,
-        sucessos,
-        erros
-      });
-      
-      setLoading(false);
+      try {
+        // Buscar clientes
+        const { data: clientesData, error: clientesError } = await supabase
+          .from('clientes')
+          .select('id, nome, email')
+          .eq('ativo', true);
+
+        if (clientesError) throw clientesError;
+
+        // Buscar logs de execução
+        let logsQuery = supabase
+          .from('logs_execucao')
+          .select('*')
+          .order('executado_em', { ascending: false });
+
+        // Filtrar por cliente se selecionado
+        if (clienteId) {
+          const clienteSelecionado = clientesData?.find(c => c.id.toString() === clienteId);
+          if (clienteSelecionado) {
+            logsQuery = logsQuery.eq('cliente_nome', clienteSelecionado.nome);
+          }
+        }
+
+        const { data: logsData, error: logsError } = await logsQuery;
+
+        if (logsError) throw logsError;
+
+        // Transformar dados para o formato esperado
+        const clientesFormatados = (clientesData || []).map(cliente => ({
+          id: cliente.id.toString(),
+          nome: cliente.nome,
+          email: cliente.email
+        }));
+
+        const logsFormatados = (logsData || []).map(log => ({
+          id: log.id.toString(),
+          cliente_nome: log.cliente_nome,
+          status: log.status as 'sucesso' | 'erro' | 'sem_dados',
+          detalhes: log.detalhes,
+          total_lojas: log.total_lojas || 0,
+          executado_em: log.executado_em,
+          origem: log.origem || 'local'
+        }));
+
+        setClientes(clientesFormatados);
+        setLogs(logsFormatados);
+
+        // Calcular estatísticas
+        const filteredLogs = logsData || [];
+        const sucessos = filteredLogs.filter(log => log.status === 'sucesso').length;
+        const erros = filteredLogs.filter(log => log.status === 'erro').length;
+        const totalLojas = filteredLogs.reduce((acc, log) => acc + (log.total_lojas || 0), 0);
+        
+        // Simular dados de sincronização (85% sincronizadas)
+        const sincronizadas = Math.floor(totalLojas * 0.85);
+        const atrasadas = totalLojas - sincronizadas;
+        
+        const hoje = new Date().toDateString();
+        const executacoesHoje = filteredLogs.filter(log => 
+          new Date(log.executado_em).toDateString() === hoje
+        ).length;
+        
+        const ultimaExecucao = filteredLogs.length > 0 
+          ? new Date(filteredLogs[0].executado_em)
+          : new Date();
+        
+        setStats({
+          totalLojas,
+          totalSincronizadas: sincronizadas,
+          totalAtrasadas: atrasadas,
+          percentualSincronizacao: totalLojas > 0 ? (sincronizadas / totalLojas) * 100 : 0,
+          ultimaExecucao: ultimaExecucao.toLocaleString('pt-BR'),
+          totalClientes: clienteId ? 1 : (clientesData?.length || 0),
+          executacoesHoje,
+          sucessos,
+          erros
+        });
+        
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     
     loadData();
@@ -124,8 +140,8 @@ export function useDashboardData(clienteId: string | null = null) {
 
   return {
     stats,
-    clientes: mockClientes,
-    logs: mockLogs,
+    clientes,
+    logs,
     loading
   };
 }
