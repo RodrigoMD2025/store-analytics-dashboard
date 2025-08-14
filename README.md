@@ -1,73 +1,120 @@
-# Welcome to your Lovable project
+# 🚀 Bot Sync Watcher
 
-## Project info
+Sistema de monitoramento e sincronização de lojas para múltiplos clientes, construído com React, TypeScript e Supabase.
 
-**URL**: https://lovable.dev/projects/0c84a35f-4e12-4e1e-b4d5-e585caf04be5
+## ✨ Características
 
-## How can I edit this code?
+- 📊 Dashboard em tempo real com métricas de sincronização
+- 🔄 Monitoramento automático de status de lojas
+- 👥 Gestão de múltiplos clientes
+- 📈 Relatórios e analytics
+- 🔐 Autenticação segura com Supabase
+- 📱 Interface responsiva e moderna
 
-There are several ways of editing your application.
+## 🛠️ Tecnologias
 
-**Use Lovable**
+- **Frontend:** React 18 + TypeScript + Vite
+- **UI Components:** shadcn/ui + Tailwind CSS
+- **Backend:** Supabase (PostgreSQL + Auth + Real-time)
+- **State Management:** React Query + React Hook Form
+- **Charts:** Recharts
+- **Deploy:** GitHub Pages
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0c84a35f-4e12-4e1e-b4d5-e585caf04be5) and start prompting.
+## 🚀 Como Executar Localmente
 
-Changes made via Lovable will be committed automatically to this repo.
+### Pré-requisitos
+- Node.js 18+ 
+- npm, yarn ou bun
 
-**Use your preferred IDE**
+### Instalação
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Clone o repositório:**
+   ```bash
+   git clone <seu-repositorio-url>
+   cd bot-sync-watcher
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   # ou
+   yarn install
+   # ou
+   bun install
+   ```
 
-Follow these steps:
+3. **Configure as variáveis de ambiente:**
+   ```bash
+   cp env.example .env.local
+   # Edite o arquivo .env.local com suas credenciais do Supabase
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+4. **Execute o projeto:**
+   ```bash
+   npm run dev
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+5. **Acesse:** `http://localhost:8080`
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🌐 Deploy no GitHub Pages
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Deploy Manual
+```bash
+npm run deploy
 ```
 
-**Edit a file directly in GitHub**
+### Deploy Automático com GitHub Actions
+1. Configure o repositório no GitHub
+2. Adicione as secrets necessárias
+3. O deploy será feito automaticamente a cada push na branch main
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Estrutura do Projeto
 
-**Use GitHub Codespaces**
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── dashboard/      # Componentes do dashboard
+│   └── ui/            # Componentes base (shadcn/ui)
+├── hooks/              # Hooks customizados
+├── integrations/       # Integrações externas (Supabase)
+├── lib/               # Utilitários e configurações
+├── pages/             # Páginas da aplicação
+└── App.tsx            # Componente principal
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔧 Scripts Disponíveis
 
-## What technologies are used for this project?
+- `npm run dev` - Servidor de desenvolvimento
+- `npm run build` - Build de produção
+- `npm run preview` - Preview da build
+- `npm run deploy` - Deploy no GitHub Pages
+- `npm run lint` - Linting do código
 
-This project is built with:
+## 🗄️ Configuração do Supabase
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Crie um projeto no [Supabase](https://supabase.com)
+2. Configure as tabelas necessárias (veja `supabase/schema.sql`)
+3. Configure as variáveis de ambiente no arquivo `.env.local`
 
-## How can I deploy this project?
+## 🤝 Contribuindo
 
-Simply open [Lovable](https://lovable.dev/projects/0c84a35f-4e12-4e1e-b4d5-e585caf04be5) and click on Share -> Publish.
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 Licença
 
-Yes, you can!
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🆘 Suporte
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Se você encontrar algum problema ou tiver dúvidas:
+- Abra uma [issue](../../issues) no GitHub
+- Consulte a [documentação](../../wiki)
+- Entre em contato com a equipe de desenvolvimento
+
+---
+
+**Desenvolvido com ❤️ para monitorar e sincronizar lojas de forma eficiente e confiável.**

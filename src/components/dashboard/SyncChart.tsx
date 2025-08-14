@@ -27,7 +27,7 @@ export function SyncChart({ data }: SyncChartProps) {
     }
   ];
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { name: string; value: number; percentage: string } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
