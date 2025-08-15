@@ -1,0 +1,65 @@
+name: Analyze Supabase Tables
+
+on:
+  workflow_dispatch:  # Execução manual
+  schedule:
+    # Análise semanal (domingo às 06:00 UTC)
+    - cron: '0 6 * * 0'
+
+jobs:
+  analyze-tables:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      
+      - name: Run Supabase analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          cd backend
+          python analyze_supabase.py
+      
+      - name: Upload analysis report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-analysis-${{ github.run_number }}
+          path: |
+            backend/relatorio_analise_supabase.json
+            backend/analise_supabase.log
+          retention-days: 90
+      
+      - name: Notify analysis completion
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
+            if [ -f "backend/relatorio_analise_supabase.json" ]; then
+              STATUS="✅ ANÁLISE CONCLUÍDA"
+              MESSAGE="Relatório de análise do Supabase gerado com sucesso"
+            else
+              STATUS="❌ ANÁLISE FALHOU"
+              MESSAGE="Falha na geração do relatório de análise"
+            fi
+            
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$ADMIN_CHAT_ID" \
+              -d text="🔍 **Análise Supabase - Status**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Executado em:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              -d parse_mode="Markdown"
+          fi
