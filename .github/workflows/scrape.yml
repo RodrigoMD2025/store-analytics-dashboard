@@ -1,0 +1,221 @@
+name: Client Monitor MD Supabase
+on:
+  workflow_dispatch:
+  schedule:
+    # Executa a cada 3 horas
+    - cron: '0 */3 * * *'
+    # Limpeza mensal do banco (primeiro dia do mês às 02:00 UTC)
+    - cron: '0 2 1 * *'
+
+jobs:
+  monitor-lojas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60  # Timeout de segurança
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3-dev \
+            libatk-bridge2.0-dev \
+            libdrm-dev \
+            libxcomposite-dev \
+            libxdamage-dev \
+            libxrandr-dev \
+            libgbm-dev \
+            libxss-dev \
+            libasound2-dev
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Install Playwright browsers
+        run: |
+          playwright install chromium
+          
+      - name: Verify Supabase connection
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          python -c "
+          import os
+          from supabase import create_client
+          try:
+              supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
+              response = supabase.table('clientes').select('count').execute()
+              print('✅ Conexão com Supabase OK')
+          except Exception as e:
+              print(f'❌ Erro na conexão com Supabase: {e}')
+              exit(1)
+          "
+          
+      - name: Run monitor script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+          GITHUB_ACTIONS: true
+          GERAR_EXCEL: false  # Desabilita Excel para economizar recursos
+        run: python client_monitor_supabase.py
+      
+      - name: Check execution status
+        if: always()
+        run: |
+          if [ -f "log_extracao.log" ]; then
+            echo "📊 Últimas linhas do log:"
+            tail -20 log_extracao.log
+            
+            # Verificar se houve erros críticos
+            if grep -q "CRITICAL\|ERROR" log_extracao.log; then
+              echo "⚠️ Erros encontrados no log"
+              exit 1
+            else
+              echo "✅ Execução concluída sem erros críticos"
+            fi
+          else
+            echo "❌ Log não encontrado"
+            exit 1
+          fi
+      
+      - name: Upload logs as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ github.run_number }}
+          path: |
+            log_extracao.log
+            relatorio_*.xlsx
+          retention-days: 30
+          
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          # Remove arquivos temporários para liberar espaço
+          rm -f relatorio_*.xlsx
+          rm -f *.png
+          echo "🧹 Arquivos temporários removidos"
+
+  # Job para limpeza mensal do banco
+  limpeza-banco:
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 2 1 * *'  # Só executa na limpeza mensal
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run database cleanup
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: |
+          python -c "
+          import os
+          from supabase import create_client
+          from datetime import datetime, timedelta
+          
+          try:
+              supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
+              
+              # Data limite: 30 dias atrás
+              data_limite = (datetime.now() - timedelta(days=30)).isoformat()
+              
+              # Limpar dados antigos das tabelas
+              print('🧹 Iniciando limpeza mensal do banco...')
+              
+              # Limpar execuções antigas
+              response = supabase.table('execucoes').delete().lt('executado_em', data_limite).execute()
+              print(f'🗑️ Execuções antigas removidas: {len(response.data) if response.data else 0}')
+              
+              # Limpar dados de lojas antigos
+              response = supabase.table('lojas_dados').delete().lt('data_coleta', data_limite).execute()
+              print(f'🗑️ Dados de lojas antigos removidos: {len(response.data) if response.data else 0}')
+              
+              # Limpar métricas antigas
+              response = supabase.table('metricas_periodicas').delete().lt('data_referencia', data_limite).execute()
+              print(f'🗑️ Métricas antigas removidas: {len(response.data) if response.data else 0}')
+              
+              print('✅ Limpeza mensal concluída com sucesso!')
+              
+          except Exception as e:
+              print(f'❌ Erro na limpeza: {e}')
+              exit(1)
+          "
+      
+      - name: Notify cleanup completion
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$ADMIN_CHAT_ID" \
+              -d text="🧹 **Limpeza Mensal do Banco Concluída**%0A%0A✅ Dados antigos (30+ dias) foram removidos%0A💾 Espaço liberado no banco de dados%0A🕐 **Executado em:** $(date +'%d/%m/%Y às %H:%M:%S UTC')" \
+              -d parse_mode="Markdown"
+          fi
+
+  # Job adicional para monitoramento de saúde
+  health-check:
+    runs-on: ubuntu-latest
+    needs: [monitor-lojas, limpeza-banco]
+    if: always()
+    
+    steps:
+      - name: Check workflow health
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: |
+          # Verificar status dos jobs anteriores
+          if [ "${{ needs.monitor-lojas.result }}" == "success" ] && [ "${{ needs.limpeza-banco.result }}" != "failure" ]; then
+            STATUS="✅ SUCESSO"
+            MESSAGE="Monitoramento executado com sucesso!"
+          elif [ "${{ needs.monitor-lojas.result }}" == "failure" ]; then
+            STATUS="❌ FALHA"
+            MESSAGE="Erro na execução do monitoramento. Verifique os logs."
+          else
+            STATUS="⚠️ PARCIAL"
+            MESSAGE="Execução parcial com alguns problemas."
+          fi
+          
+          # Enviar notificação para admin
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$ADMIN_CHAT_ID" \
+              -d text="🤖 **GitHub Actions - Status da Execução**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Horário:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              -d parse_mode="Markdown"
+          fi
