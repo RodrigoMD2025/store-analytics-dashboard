@@ -46,7 +46,7 @@ jobs:
       - name: Notify analysis completion
         if: always()
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TEGRAM_BOT_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
         run: |
           if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
