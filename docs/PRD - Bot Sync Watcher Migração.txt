@@ -1,0 +1,209 @@
+📋 PRD - Bot Sync Watcher: Migração para GitHub Pages com Supabase
+🎯 Visão Geral do Projeto
+Nome do Projeto: Bot Sync Watcher
+Objetivo: Sistema de monitoramento e sincronização de lojas para múltiplos clientes
+Tecnologias: React + TypeScript + Vite + Supabase + Tailwind CSS
+Plataforma de Deploy: GitHub Pages
+
+
+🚀 Fase 1: Preparação e Limpeza do Projeto
+1.1 Remoção de Dependências Lovable
+[ ] Remover lovable-tagger do package.json
+[ ] Remover plugin do vite.config.ts
+[ ] Limpar comentários específicos do Lovable
+[ ] Atualizar README.md com instruções de instalação local
+1.2 Configuração para GitHub Pages
+[ ] Instalar gh-pages como dependência de desenvolvimento
+[ ] Configurar script de build e deploy no package.json
+[ ] Ajustar vite.config.ts para base path do GitHub Pages
+[ ] Configurar rotas para funcionar com GitHub Pages (HashRouter)
+1.3 Estrutura de Arquivos
+[ ] Organizar componentes em pastas lógicas
+[ ] Separar hooks customizados
+[ ] Criar arquivos de configuração de ambiente
+[ ] Documentar estrutura do projeto
+
+
+🗄️ Fase 2: Implementação do Supabase
+2.1 Configuração de Ambiente
+[ ] Criar arquivo .env.example
+[ ] Configurar variáveis de ambiente para diferentes ambientes
+[ ] Implementar sistema de configuração dinâmica
+[ ] Documentar processo de configuração
+2.2 Estrutura do Banco de Dados
+[ ] Tabela clientes:
+id (UUID, PK)
+nome (VARCHAR)
+email (VARCHAR)
+ativo (BOOLEAN)
+created_at (TIMESTAMP)
+updated_at (TIMESTAMP)
+[ ] Tabela lojas:
+id (UUID, PK)
+cliente_id (UUID, FK para clientes)
+nome (VARCHAR)
+endereco (TEXT)
+status_sincronizacao (ENUM: 'sincronizada', 'atrasada', 'erro')
+ultima_sincronizacao (TIMESTAMP)
+created_at (TIMESTAMP)
+[ ] Tabela logs_execucao:
+id (UUID, PK)
+cliente_id (UUID, FK para clientes)
+status (ENUM: 'sucesso', 'erro', 'sem_dados')
+total_lojas (INTEGER)
+lojas_sincronizadas (INTEGER)
+lojas_atrasadas (INTEGER)
+detalhes (TEXT)
+executado_em (TIMESTAMP)
+origem (VARCHAR)
+2.3 Autenticação e Autorização
+[ ] Implementar sistema de login com Supabase Auth
+[ ] Criar páginas de login/registro
+[ ] Implementar middleware de proteção de rotas
+[ ] Sistema de roles (admin, cliente, viewer)
+
+
+🎨 Fase 3: Funcionalidades do Sistema
+3.1 Dashboard Principal
+[ ] Métricas em Tempo Real:
+Total de lojas por cliente
+Percentual de sincronização
+Status de execuções
+Alertas de falhas
+[ ] Filtros e Busca:
+Seleção de cliente
+Filtro por período
+Busca por nome de loja
+Filtro por status
+3.2 Gestão de Clientes
+[ ] CRUD de Clientes:
+Cadastro de novos clientes
+Edição de informações
+Ativação/desativação
+Histórico de atividades
+[ ] Configurações por Cliente:
+Horários de sincronização
+Notificações personalizadas
+Limites de tolerância
+3.3 Monitoramento de Lojas
+[ ] Status de Sincronização:
+Visualização em tempo real
+Histórico de mudanças
+Alertas de falhas
+Relatórios de performance
+[ ] Logs e Auditoria:
+Histórico completo de execuções
+Detalhes de erros
+Métricas de performance
+Exportação de relatórios
+
+
+🔧 Fase 4: Funcionalidades Avançadas
+4.1 Sistema de Notificações
+[ ] Notificações em Tempo Real:
+Webhooks para falhas críticas
+Email para resumos diários
+Push notifications no navegador
+Integração com Slack/Discord
+4.2 Relatórios e Analytics
+[ ] Relatórios Personalizados:
+Exportação em PDF/Excel
+Gráficos interativos
+Comparativos entre períodos
+KPIs personalizados
+4.3 API e Integrações
+[ ] Endpoints REST:
+Status de sincronização
+Histórico de execuções
+Métricas agregadas
+Webhooks de eventos
+
+
+   Fase 5: Deploy e Infraestrutura
+5.1 GitHub Pages
+[ ] Configurar repositório
+[ ] Configurar GitHub Actions para deploy automático
+[ ] Configurar domínio customizado (opcional)
+[ ] Testes de funcionalidade no ambiente de produção
+5.2 Supabase
+[ ] Configurar projeto de produção
+[ ] Implementar backup automático
+[ ] Configurar monitoramento
+[ ] Documentar processo de manutenção
+5.3 Monitoramento e Logs
+[ ] Implementar logging estruturado
+[ ] Configurar alertas de erro
+[ ] Monitoramento de performance
+[ ] Dashboard de saúde do sistema
+
+
+📱 Fase 6: Melhorias de UX/UI
+6.1 Responsividade
+[ ] Otimizar para dispositivos móveis
+[ ] Implementar PWA (Progressive Web App)
+[ ] Testes de usabilidade
+[ ] Acessibilidade (WCAG 2.1)
+6.2 Performance
+[ ] Implementar lazy loading
+[ ] Otimizar bundle size
+[ ] Implementar cache inteligente
+[ ] Testes de performance
+
+
+   Fase 7: Testes e Qualidade
+7.1 Testes Automatizados
+[ ] Testes unitários (Jest + React Testing Library)
+[ ] Testes de integração
+[ ] Testes E2E (Playwright)
+[ ] Cobertura de código
+7.2 Qualidade de Código
+[ ] Configurar ESLint e Prettier
+[ ] Implementar Husky para pre-commit hooks
+[ ] Configurar SonarQube ou similar
+[ ] Code review automatizado
+
+
+   Fase 8: Documentação e Treinamento
+8.1 Documentação Técnica
+[ ] README detalhado
+[ ] Documentação da API
+[ ] Guia de contribuição
+[ ] Arquitetura do sistema
+8.2 Documentação do Usuário
+[ ] Manual do usuário
+[ ] Vídeos tutoriais
+[ ] FAQ
+[ ] Suporte técnico
+
+
+   Cronograma Estimado
+Fase 1-2: 1-2 semanas
+Fase 3-4: 3-4 semanas
+Fase 5-6: 2-3 semanas
+Fase 7-8: 1-2 semanas
+Total Estimado: 7-11 semanas
+
+
+🚨 Riscos e Mitigações
+Riscos Técnicos
+Supabase rate limits: Implementar cache e otimizações
+GitHub Pages limitações: Usar HashRouter e otimizar assets
+Performance com muitos dados: Implementar paginação e virtualização
+Riscos de Negócio
+Mudanças de requisitos: Implementar arquitetura flexível
+Escalabilidade: Usar padrões que facilitem crescimento
+Manutenção: Documentar tudo e criar testes automatizados
+
+
+💰 Recursos Necessários
+Desenvolvedor Full-Stack: 1 pessoa
+Designer UX/UI: 0.5 pessoa (consultoria)
+DevOps: 0.5 pessoa (configuração inicial)
+QA: 0.5 pessoa (testes e validação)
+
+🎉 Próximos Passos Imediatos
+Aprovar este PRD
+Configurar repositório no GitHub
+Iniciar Fase 1 (Limpeza do projeto)
+Configurar ambiente de desenvolvimento
+Implementar estrutura base do Supabase

@@ -17,6 +17,17 @@ interface LogExecucao {
   origem: string;
 }
 
+interface LojaData {
+  id: string;
+  loja_nome: string;
+  identificador: string;
+  atualizado_em: string;
+  sincronizada: boolean;
+  tempo_atraso_horas: number;
+  tempo_atraso_dias: number;
+  data_coleta: string;
+}
+
 interface DashboardStats {
   totalLojas: number;
   totalSincronizadas: number;
@@ -44,6 +55,7 @@ export function useDashboardData(clienteId: string | null = null) {
   
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [logs, setLogs] = useState<LogExecucao[]>([]);
+  const [lojas, setLojas] = useState<LojaData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,8 +74,7 @@ export function useDashboardData(clienteId: string | null = null) {
         // Buscar logs de execução
         let logsQuery = supabase
           .from('logs_execucao')
-          .select('*')
-          .order('executado_em', { ascending: false });
+          .select('*');
 
         // Filtrar por cliente se selecionado
         if (clienteId) {
@@ -73,9 +84,59 @@ export function useDashboardData(clienteId: string | null = null) {
           }
         }
 
+        // Aplicar ordenação e limite no final
+        logsQuery = logsQuery.order('executado_em', { ascending: false }).limit(3);
+
         const { data: logsData, error: logsError } = await logsQuery;
 
         if (logsError) throw logsError;
+
+        // Buscar dados das lojas (apenas os mais recentes de cada cliente)
+        let lojasQuery = supabase
+          .from('lojas_dados')
+          .select('*')
+          .order('data_coleta', { ascending: false });
+
+        // Filtrar por cliente se selecionado
+        if (clienteId) {
+          const clienteSelecionado = clientesData?.find(c => c.id.toString() === clienteId);
+          if (clienteSelecionado) {
+            // Buscar apenas os dados mais recentes para este cliente
+            const { data: execucoesData } = await supabase
+              .from('execucoes')
+              .select('id')
+              .eq('cliente_nome', clienteSelecionado.nome)
+              .order('executado_em', { ascending: false })
+              .limit(1);
+
+            if (execucoesData && execucoesData.length > 0) {
+              lojasQuery = lojasQuery.eq('execucao_id', execucoesData[0].id);
+            } else {
+              lojasQuery = lojasQuery.eq('cliente_nome', clienteSelecionado.nome);
+            }
+          }
+        } else {
+          // Para todos os clientes, buscar os dados da última execução de cada um
+          const { data: latestExecutions, error: execError } = await supabase
+            .from('execucoes')
+            .select('id')
+            .order('executado_em', { ascending: false })
+            .limit(clientesData?.length || 1); // Limita ao número de clientes
+
+          if (execError) throw execError;
+
+          const executionIds = latestExecutions?.map(e => e.id) || [];
+
+          if (executionIds.length > 0) {
+            lojasQuery = lojasQuery.in('execucao_id', executionIds);
+          } else {
+            lojasQuery = lojasQuery.limit(0); // Nenhum dado se não houver execuções
+          }
+        }
+
+        const { data: lojasData, error: lojasError } = await lojasQuery;
+
+        if (lojasError) throw lojasError;
 
         // Transformar dados para o formato esperado
         const clientesFormatados = (clientesData || []).map(cliente => ({
@@ -94,26 +155,36 @@ export function useDashboardData(clienteId: string | null = null) {
           origem: log.origem || 'local'
         }));
 
+        const lojasFormatadas = (lojasData || []).map(loja => ({
+          id: loja.id,
+          loja_nome: loja.loja_nome,
+          identificador: loja.identificador,
+          atualizado_em: loja.atualizado_em,
+          sincronizada: loja.sincronizada,
+          tempo_atraso_horas: loja.tempo_atraso_horas,
+          tempo_atraso_dias: loja.tempo_atraso_dias,
+          data_coleta: loja.data_coleta
+        }));
+
         setClientes(clientesFormatados);
         setLogs(logsFormatados);
+        setLojas(lojasFormatadas);
 
-        // Calcular estatísticas
-        const filteredLogs = logsData || [];
-        const sucessos = filteredLogs.filter(log => log.status === 'sucesso').length;
-        const erros = filteredLogs.filter(log => log.status === 'erro').length;
-        const totalLojas = filteredLogs.reduce((acc, log) => acc + (log.total_lojas || 0), 0);
-        
-        // Simular dados de sincronização (85% sincronizadas)
-        const sincronizadas = Math.floor(totalLojas * 0.85);
+        // Calcular estatísticas reais com base nos dados das lojas
+        const totalLojas = lojasFormatadas.length;
+        const sincronizadas = lojasFormatadas.filter(loja => loja.sincronizada).length;
         const atrasadas = totalLojas - sincronizadas;
         
-        const hoje = new Date().toDateString();
-        const executacoesHoje = filteredLogs.filter(log => 
-          new Date(log.executado_em).toDateString() === hoje
-        ).length;
+        const sucessos = logsData ? logsData.filter(log => log.status === 'sucesso').length : 0;
+        const erros = logsData ? logsData.filter(log => log.status === 'erro').length : 0;
         
-        const ultimaExecucao = filteredLogs.length > 0 
-          ? new Date(filteredLogs[0].executado_em)
+        const hoje = new Date().toDateString();
+        const executacoesHoje = logsData ? logsData.filter(log => 
+          new Date(log.executado_em).toDateString() === hoje
+        ).length : 0;
+        
+        const ultimaExecucao = logsData && logsData.length > 0 
+          ? new Date(logsData[0].executado_em)
           : new Date();
         
         setStats({
@@ -142,6 +213,7 @@ export function useDashboardData(clienteId: string | null = null) {
     stats,
     clientes,
     logs,
+    lojas,
     loading
   };
 }
