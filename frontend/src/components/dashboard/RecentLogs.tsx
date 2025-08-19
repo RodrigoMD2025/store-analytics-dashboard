@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Link } from "react-router-dom";
 
 interface LogExecucao {
   id: string;
@@ -62,8 +63,10 @@ export function RecentLogs({ logs }: RecentLogsProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-primary" />
-          Execuções Recentes
+          <Link to="/daily-executions" className="flex items-center gap-2 hover:underline">
+            <Clock className="h-5 w-5 text-primary" />
+            Execuções Recentes
+          </Link>
         </CardTitle>
       </CardHeader>
       <CardContent>
