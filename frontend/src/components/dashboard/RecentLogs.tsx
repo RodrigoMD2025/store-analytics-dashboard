@@ -73,7 +73,7 @@ export function RecentLogs({ logs }: RecentLogsProps) {
               Nenhuma execução recente encontrada
             </p>
           ) : (
-            logs.slice(0, 10).map((log) => (
+            logs.slice(0, 3).map((log) => (
               <div
                 key={log.id}
                 className="flex items-start justify-between border-b border-border pb-3 last:border-b-0"

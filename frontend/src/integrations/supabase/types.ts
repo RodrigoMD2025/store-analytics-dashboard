@@ -47,6 +47,122 @@ export type Database = {
         }
         Relationships: []
       }
+      execucoes: {
+        Row: {
+          id: string
+          cliente_id: number | null
+          cliente_nome: string
+          total_lojas: number | null
+          lojas_sincronizadas: number | null
+          lojas_atrasadas: number | null
+          percentual_sincronizadas: number | null
+          percentual_atrasadas: number | null
+          status: string | null
+          erro_detalhes: string | null
+          executado_em: string | null
+          origem: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          cliente_id?: number | null
+          cliente_nome: string
+          total_lojas?: number | null
+          lojas_sincronizadas?: number | null
+          lojas_atrasadas?: number | null
+          percentual_sincronizadas?: number | null
+          percentual_atrasadas?: number | null
+          status?: string | null
+          erro_detalhes?: string | null
+          executado_em?: string | null
+          origem?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          cliente_id?: number | null
+          cliente_nome?: string
+          total_lojas?: number | null
+          lojas_sincronizadas?: number | null
+          lojas_atrasadas?: number | null
+          percentual_sincronizadas?: number | null
+          percentual_atrasadas?: number | null
+          status?: string | null
+          erro_detalhes?: string | null
+          executado_em?: string | null
+          origem?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "execucoes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      lojas_dados: {
+        Row: {
+          id: string
+          execucao_id: string | null
+          cliente_id: number | null
+          cliente_nome: string
+          loja_nome: string
+          identificador: string
+          atualizado_em: string | null
+          sincronizada: boolean | null
+          tempo_atraso_horas: number | null
+          tempo_atraso_dias: number | null
+          hash_loja: string | null
+          data_coleta: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          execucao_id?: string | null
+          cliente_id?: number | null
+          cliente_nome: string
+          loja_nome: string
+          identificador: string
+          atualizado_em?: string | null
+          sincronizada?: boolean | null
+          tempo_atraso_horas?: number | null
+          tempo_atraso_dias?: number | null
+          hash_loja?: string | null
+          data_coleta?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          execucao_id?: string | null
+          cliente_id?: number | null
+          cliente_nome?: string
+          loja_nome?: string
+          identificador?: string
+          atualizado_em?: string | null
+          sincronizada?: boolean | null
+          tempo_atraso_horas?: number | null
+          tempo_atraso_dias?: number | null
+          hash_loja?: string | null
+          data_coleta?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lojas_dados_cliente_id_fkey"
+            columns: ["cliente_id"]
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lojas_dados_execucao_id_fkey"
+            columns: ["execucao_id"]
+            referencedRelation: "execucoes"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       logs_execucao: {
         Row: {
           cliente_nome: string

@@ -4,6 +4,7 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { SyncChart } from "@/components/dashboard/SyncChart";
 import { ClienteSelect } from "@/components/dashboard/ClienteSelect";
 import { RecentLogs } from "@/components/dashboard/RecentLogs";
+import { LojasTable } from "@/components/dashboard/LojasTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -19,7 +20,7 @@ import {
 
 const Index = () => {
   const [selectedCliente, setSelectedCliente] = useState<string | null>(null);
-  const { stats, clientes, logs, loading } = useDashboardData(selectedCliente);
+  const { stats, clientes, logs, lojas, loading } = useDashboardData(selectedCliente);
 
   if (loading) {
     return (
@@ -69,6 +70,14 @@ const Index = () => {
                 </CardContent>
               </Card>
             </div>
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-64 w-full" />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -95,7 +104,10 @@ const Index = () => {
             <ClienteSelect
               clientes={clientes}
               selectedCliente={selectedCliente}
-              onClienteChange={setSelectedCliente}
+              onClienteChange={(value) => {
+                console.log('Callback onClienteChange recebido na Index.tsx:', value);
+                setSelectedCliente(value);
+              }}
             />
           </div>
 
@@ -150,6 +162,9 @@ const Index = () => {
             
             <RecentLogs logs={logs} />
           </div>
+
+          {/* Tabela de lojas */}
+          <LojasTable lojas={lojas} />
 
           {/* Estatísticas adicionais */}
           <div className="grid gap-4 md:grid-cols-3">
