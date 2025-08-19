@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface LogExecucao {
   id: string;
@@ -21,6 +22,7 @@ const DailyExecutions = () => {
   const [dailyLogs, setDailyLogs] = useState<LogExecucao[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDailyLogs = async () => {
@@ -99,6 +101,9 @@ const DailyExecutions = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
+        <Button onClick={() => navigate('/')} variant="outline" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para o Dashboard
+        </Button>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -158,6 +163,6 @@ const DailyExecutions = () => {
       </div>
     </div>
   );
-};
+};;
 
 export default DailyExecutions;
