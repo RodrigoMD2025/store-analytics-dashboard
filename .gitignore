@@ -188,3 +188,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Gemini specific
+log action/
+docs/console 1.png

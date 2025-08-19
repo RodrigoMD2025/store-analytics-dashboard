@@ -9,8 +9,8 @@ interface SyncChartProps {
 }
 
 const COLORS = {
-  sincronizadas: 'hsl(var(--accent))',
-  atrasadas: 'hsl(var(--destructive))'
+  sincronizadas: 'hsl(var(--chart-1))',
+  atrasadas: 'hsl(var(--chart-2))'
 };
 
 export function SyncChart({ data }: SyncChartProps) {
@@ -18,12 +18,12 @@ export function SyncChart({ data }: SyncChartProps) {
     {
       name: 'Sincronizadas',
       value: data.sincronizadas,
-      percentage: ((data.sincronizadas / data.total) * 100).toFixed(1)
+      percentage: data.total > 0 ? ((data.sincronizadas / data.total) * 100).toFixed(1) : '0'
     },
     {
       name: 'Atrasadas', 
       value: data.atrasadas,
-      percentage: ((data.atrasadas / data.total) * 100).toFixed(1)
+      percentage: data.total > 0 ? ((data.atrasadas / data.total) * 100).toFixed(1) : '0'
     }
   ];
 
