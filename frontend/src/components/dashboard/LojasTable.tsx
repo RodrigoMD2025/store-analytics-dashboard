@@ -25,7 +25,25 @@ export function LojasTable({ lojas }: LojasTableProps) {
       return `${dias} dia${dias > 1 ? 's' : ''}`;
     }
     if (horas > 0) {
-      return `${horas.toFixed(1)} hora${horas > 1 ? 's' : ''}`;
+      const totalMinutes = Math.round(horas * 60);
+      if (totalMinutes === 0) {
+        return 'Atualizada';
+      }
+
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+
+      let result = '';
+      if (h > 0) {
+        result += `${h} hora${h > 1 ? 's' : ''}`;
+      }
+      if (m > 0) {
+        if (result) {
+          result += ' e ';
+        }
+        result += `${m} minuto${m > 1 ? 's' : ''}`;
+      }
+      return result;
     }
     return 'Atualizada';
   };
