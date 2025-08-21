@@ -20,32 +20,27 @@ interface LojasTableProps {
 }
 
 export function LojasTable({ lojas }: LojasTableProps) {
-  const formatarTempoAtraso = (horas: number, dias: number) => {
-    if (dias > 0) {
-      return `${dias} dia${dias > 1 ? 's' : ''}`;
+  const formatarTempoAtraso = (atualizadoEmString: string) => {
+    if (!atualizadoEmString) {
+      return 'N/A';
     }
-    if (horas > 0) {
-      const totalMinutes = Math.round(horas * 60);
-      if (totalMinutes === 0) {
-        return 'Atualizada';
-      }
 
-      const h = Math.floor(totalMinutes / 60);
-      const m = totalMinutes % 60;
+    const atualizadoEm = new Date(atualizadoEmString);
+    const agora = new Date();
 
-      let result = '';
-      if (h > 0) {
-        result += `${h} hora${h > 1 ? 's' : ''}`;
-      }
-      if (m > 0) {
-        if (result) {
-          result += ' e ';
-        }
-        result += `${m} minuto${m > 1 ? 's' : ''}`;
-      }
-      return result;
+    let diff = agora.getTime() - atualizadoEm.getTime();
+
+    if (diff < 60 * 1000) { // Less than 1 minute
+      return 'Atualizada';
     }
-    return 'Atualizada';
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= dias * (1000 * 60 * 60 * 24);
+    const horas = Math.floor(diff / (1000 * 60 * 60));
+    diff -= horas * (1000 * 60 * 60);
+    const minutos = Math.floor(diff / (1000 * 60));
+
+    return `${dias} dias ${horas}h ${minutos}min`;
   };
 
   const formatarData = (data: string) => {
@@ -96,7 +91,7 @@ export function LojasTable({ lojas }: LojasTableProps) {
                   <TableCell>{loja.identificador}</TableCell>
                   <TableCell>{formatarData(loja.atualizado_em)}</TableCell>
                   <TableCell>
-                    {formatarTempoAtraso(loja.tempo_atraso_horas, loja.tempo_atraso_dias)}
+                    {formatarTempoAtraso(loja.atualizado_em)}
                   </TableCell>
                   <TableCell>
                     <Badge variant={loja.sincronizada ? "default" : "destructive"}>
