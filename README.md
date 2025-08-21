@@ -160,7 +160,7 @@ python client_monitor_supabase.py
 ### **Produção (GitHub Actions)**
 
 Os workflows executam automaticamente:
-- **Monitoramento:** A cada 3 horas
+- **Monitoramento:** A cada 1 hora
 - **Limpeza:** Primeiro dia do mês às 02:00 UTC
 - **Análise:** Domingo às 06:00 UTC
 
