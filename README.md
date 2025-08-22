@@ -276,12 +276,6 @@ Acesse a aba `Actions` no GitHub para visualizar:
 3. Integrar com APIs externas
 4. Deploy automático via GitHub Actions
 
-## 📚 Documentação
-
-- **API Reference:** [/docs/api.md](/docs/api.md)
-- **Guia do Desenvolvedor:** [/docs/developer-guide.md](/docs/developer-guide.md)
-- **Configuração Avançada:** [/docs/advanced-config.md](/docs/advanced-config.md)
-
 ## 🤝 Contribuição
 
 1. Faça um fork do projeto
@@ -294,11 +288,26 @@ Acesse a aba `Actions` no GitHub para visualizar:
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 🆘 Suporte e Comunidade
+## 📬 Contato
+Vamos nos conectar? Sou sempre aberto a discussões sobre automação, qualidade de software e modernização de sistemas!
+</p>
+<p align="left">
+  <a href="mailto:rodrigo.melo@example.com" title="Gmail">
+    <img src="https://img.shields.io/badge/-Gmail-FF0000?style=flat-square&labelColor=FF0000&logo=gmail&logoColor=white"/>
+  </a>
+  <a href="https://www.linkedin.com/in/rodrigo-melo-dos-santos-0262a033/" title="LinkedIn">
+    <img src="https://img.shields.io/badge/-Linkedin-0e76a8?style=flat-square&logo=Linkedin&logoColor=white"/>
+  </a>
+  <a href="#" title="WhatsApp">
+    <img src="https://img.shields.io/badge/-WhatsApp-25D366?style=flat-square&labelColor=25D366&logo=whatsapp&logoColor=white"/>
+  </a>
+</p>
 
-- **Issues:** [GitHub Issues](https://github.com/seu-usuario/store-monitoring-dashboard/issues)
-- **Discussões:** [GitHub Discussions](https://github.com/seu-usuario/store-monitoring-dashboard/discussions)
-- **Wiki:** [Documentação Completa](https://github.com/seu-usuario/store-monitoring-dashboard/wiki)
+---
+<div align="center">
+  <p>⭐ Se este projeto te ajudou, considere dar uma estrela!</p>
+  <p>🐛 Encontrou um bug? <a href="https://github.com/seu-usuario/store-monitoring-dashboard/issues">Reporte aqui</a></p>
+</div>
 
 ---
 
