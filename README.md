@@ -1,298 +1,308 @@
-# 🤖 Bot Sync Watcher
+# 📊 Dashboard de Monitoramento de Lojas Online
 
-Sistema completo de monitoramento e sincronização de lojas com dashboard web em tempo real, construído com React + TypeScript no frontend e Python no backend, integrado ao Supabase.
+Sistema completo de monitoramento e análise de dados estatísticos de lojas online com dashboard web em tempo real, construído com React + TypeScript no frontend e Python no backend, integrado ao Supabase.
 
 ## 🚀 Funcionalidades
 
 ### **Frontend (React + TypeScript)**
-- 📊 **Dashboard em tempo real** com métricas de sincronização
-- 📈 **Gráficos interativos** usando Recharts
+- 📊 **Dashboard em tempo real** com métricas e estatísticas de lojas
+- 📈 **Gráficos interativos** e visualizações de dados usando Recharts
 - 🎨 **Interface moderna** com shadcn/ui e Tailwind CSS
-- 📱 **Responsivo** para desktop e mobile
-- 🔄 **Atualização automática** dos dados
+- 📱 **Design responsivo** para desktop e mobile
+- 🔄 **Atualização automática** dos dados em tempo real
 
 ### **Backend (Python)**
-- 🔍 **Webscraping automático** com Playwright
-- 📊 **Coleta de dados** de lojas em tempo real
-- 💾 **Armazenamento** no Supabase
-- 📱 **Notificações** via Telegram
-- 📈 **Geração de relatórios** em Excel
-- 🧹 **Limpeza automática** do banco
-- 🔍 **Análise e diagnóstico** das tabelas
+- 🔍 **Coleta automática** de dados de lojas online via webscraping
+- 📊 **Processamento** e análise de dados estatísticos
+- 💾 **Armazenamento seguro** no Supabase
+- 📱 **Notificações inteligentes** via Telegram
+- 📈 **Geração de relatórios** em Excel e PDF
+- 🧹 **Limpeza automática** e otimização do banco
+- 🔍 **Análise e diagnóstico** avançado das tabelas
 
 ### **Automação (GitHub Actions)**
-- ⏰ **Monitoramento a cada 3 horas**
-- 🗓️ **Limpeza mensal** do banco de dados
-- 📊 **Análise semanal** das tabelas
-- 🔄 **Execução automática** dos scripts
+- ⏰ **Monitoramento contínuo** a cada 3 horas
+- 🗓️ **Manutenção automática** mensal do banco de dados
+- 📊 **Análise semanal** de performance e saúde do sistema
+- 🔄 **Execução automática** de todos os processos
 
 ## 🏗️ Arquitetura do Projeto
 
 ```
-bot-sync-watcher/
-├── frontend/                 # React + TypeScript
+store-monitoring-dashboard/
+├── frontend/                 # React + TypeScript Dashboard
 │   ├── src/
-│   │   ├── components/      # Componentes React
+│   │   ├── components/      # Componentes do dashboard
 │   │   ├── hooks/          # Hooks customizados
 │   │   ├── integrations/   # Integração Supabase
 │   │   └── pages/          # Páginas da aplicação
 │   ├── package.json
 │   └── vite.config.ts
-├── backend/                  # Scripts Python
-│   ├── analyze_supabase.py  # Análise das tabelas
-│   ├── cleanup_database.py  # Limpeza automática
-│   ├── client_monitor_supabase.py # Monitoramento principal
+├── backend/                  # Scripts Python de Monitoramento
+│   ├── analyze_supabase.py  # Análise avançada das tabelas
+│   ├── cleanup_database.py  # Limpeza e otimização automática
+│   ├── store_monitor.py     # Monitor principal de lojas
 │   ├── requirements.txt     # Dependências Python
-│   └── setup_dev.bat       # Scripts de setup
-├── .github/workflows/       # GitHub Actions
-│   ├── analyze.yml         # Análise semanal
-│   ├── scrape.yml          # Monitoramento + Limpeza
-│   └── sync.yml            # Sincronização
-└── README.md               # Este arquivo
+│   └── setup_dev.bat       # Scripts de configuração
+├── .github/workflows/       # Automação GitHub Actions
+│   ├── analyze.yml         # Análise semanal do sistema
+│   ├── monitor.yml         # Monitoramento + Manutenção
+│   └── deploy.yml          # Deploy automático
+└── README.md               # Documentação do projeto
 ```
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Stack Tecnológica
 
 ### **Frontend**
-- **React 18** com TypeScript
-- **Vite** para build e desenvolvimento
-- **Tailwind CSS** para estilização
-- **shadcn/ui** para componentes
-- **Recharts** para gráficos
-- **React Query** para gerenciamento de estado
+- **React 18** com TypeScript para type safety
+- **Vite** para build otimizado e desenvolvimento rápido
+- **Tailwind CSS** para estilização moderna
+- **shadcn/ui** para componentes consistentes
+- **Recharts** para visualizações de dados avançadas
+- **React Query** para gerenciamento eficiente de estado
 
 ### **Backend**
-- **Python 3.11+** para scripts
-- **Playwright** para webscraping
-- **Supabase** para banco de dados
-- **Pandas** para manipulação de dados
-- **Matplotlib** para gráficos em relatórios
+- **Python 3.11+** para processamento de dados
+- **Playwright** para coleta automatizada de dados
+- **Supabase** para banco de dados em tempo real
+- **Pandas** para análise e manipulação de dados
+- **Matplotlib/Plotly** para geração de gráficos
 
 ### **Infraestrutura**
-- **Supabase** (PostgreSQL + Auth + Real-time)
-- **GitHub Actions** para automação
-- **GitHub Pages** para deploy
+- **Supabase** (PostgreSQL + Autenticação + Real-time)
+- **GitHub Actions** para CI/CD e automação
+- **GitHub Pages** para deploy do frontend
 
-## 🚀 Instalação e Configuração
+## 🚀 Guia de Instalação
 
 ### **Pré-requisitos**
-- Node.js 18+
-- Python 3.11+
-- Git
-- Conta no GitHub
-- Projeto no Supabase
+- Node.js 18+ instalado
+- Python 3.11+ instalado
+- Git configurado
+- Conta no GitHub ativa
+- Projeto configurado no Supabase
 
-### **1. Clone o Repositório**
+### **1. Clonar o Repositório**
 ```bash
-git clone https://github.com/RodrigoMD2025/bot-sync-watcher.git
-cd bot-sync-watcher
+git clone https://github.com/seu-usuario/store-monitoring-dashboard.git
+cd store-monitoring-dashboard
 ```
 
 ### **2. Configurar Frontend**
 ```bash
 cd frontend
 npm install
+npm run dev
 ```
 
 ### **3. Configurar Backend**
 ```bash
 cd backend
 
-# Setup automático (Windows)
+# Configuração automática (Windows)
 setup_dev.bat
 
-# Ou setup manual
+# Configuração manual (todas as plataformas)
 python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou
 venv\Scripts\activate.bat  # Windows
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-### **4. Configurar Variáveis de Ambiente**
+### **4. Variáveis de Ambiente**
 
 #### **Frontend (.env)**
 ```env
 VITE_SUPABASE_URL=sua_url_do_supabase
-VITE_SUPABASE_ANON_KEY=sua_chave_anonima
+VITE_SUPABASE_ANON_KEY=sua_chave_publica_supabase
 ```
 
 #### **Backend (.env)**
 ```env
 SUPABASE_URL=sua_url_do_supabase
-SUPABASE_KEY=sua_chave_service_role
-TELEGRAM_BOT_TOKEN=seu_token_do_bot
-ADMIN_CHAT_ID=seu_chat_id
+SUPABASE_KEY=sua_chave_service_role_supabase
+TELEGRAM_BOT_TOKEN=token_do_seu_bot_telegram
+ADMIN_CHAT_ID=id_do_chat_admin
 ```
 
-### **5. Configurar GitHub Secrets**
-Vá para `Settings > Secrets and variables > Actions` e configure:
+### **5. GitHub Secrets**
+Configure no repositório (`Settings > Secrets and variables > Actions`):
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `TELEGRAM_BOT_TOKEN` (opcional)
-- `ADMIN_CHAT_ID` (opcional)
+- `TELEGRAM_BOT_TOKEN` (opcional para notificações)
+- `ADMIN_CHAT_ID` (opcional para alertas)
 
-## 📋 Uso
+## 📋 Como Usar
 
 ### **Desenvolvimento Local**
 
-#### **Frontend**
+#### **Executar Dashboard**
 ```bash
 cd frontend
 npm run dev
 # Acesse: http://localhost:5173
 ```
 
-#### **Backend**
+#### **Executar Monitoramento**
 ```bash
 cd backend
-venv\Scripts\activate.bat
+source venv/bin/activate
 
-# Análise das tabelas
+# Análise completa do sistema
 python analyze_supabase.py
 
-# Limpeza do banco
+# Limpeza e otimização do banco
 python cleanup_database.py
 
-# Monitoramento principal
-python client_monitor_supabase.py
+# Monitoramento das lojas
+python store_monitor.py
 ```
 
-### **Produção (GitHub Actions)**
+### **Produção (Automático)**
 
-Os workflows executam automaticamente:
-- **Monitoramento:** A cada 1 hora
-- **Limpeza:** Primeiro dia do mês às 02:00 UTC
-- **Análise:** Domingo às 06:00 UTC
+O sistema executa automaticamente via GitHub Actions:
+- **Coleta de dados:** A cada 3 horas
+- **Manutenção do banco:** Primeiro dia do mês às 02:00 UTC
+- **Análise do sistema:** Domingo às 06:00 UTC
 
-## 🔄 Workflows GitHub Actions
+## 🔄 Automação GitHub Actions
 
-### **Monitor Lojas (scrape.yml)**
-- **Frequência:** A cada 3 horas
-- **Função:** Executa webscraping e salva no Supabase
-- **Job:** `monitor-lojas`
+### **Monitor de Lojas (monitor.yml)**
+- **Frequência:** A cada 3 horas, 24/7
+- **Função:** Coleta dados de todas as lojas configuradas
+- **Saída:** Dados atualizados no dashboard em tempo real
 
-### **Limpeza Banco (scrape.yml)**
+### **Manutenção do Sistema (monitor.yml)**
 - **Frequência:** Mensal (primeiro dia às 02:00 UTC)
-- **Função:** Remove dados antigos (30+ dias)
-- **Job:** `limpeza-banco`
+- **Função:** Limpeza de dados antigos e otimização
+- **Saída:** Sistema otimizado e performático
 
-### **Análise Supabase (analyze.yml)**
+### **Análise de Performance (analyze.yml)**
 - **Frequência:** Semanal (domingo às 06:00 UTC)
-- **Função:** Analisa saúde das tabelas
-- **Job:** `analyze-tables`
+- **Função:** Relatórios de saúde e performance do sistema
+- **Saída:** Insights sobre o funcionamento do monitoramento
 
-## 📊 Estrutura do Banco de Dados
+## 📊 Estrutura de Dados
 
-### **Tabelas Principais**
-- **`clientes`** - Cadastro de clientes
-- **`execucoes`** - Histórico de execuções
-- **`lojas_dados`** - Dados coletados das lojas
-- **`metricas_periodicas`** - Métricas agregadas
+### **Tabelas do Sistema**
+- **`lojas`** - Cadastro e configurações das lojas monitoradas
+- **`execucoes`** - Histórico de coletas e monitoramentos
+- **`dados_estatisticos`** - Dados coletados e métricas das lojas
+- **`relatorios`** - Relatórios e análises geradas
 
 ### **Relacionamentos**
 ```
-clientes (1) ←→ (N) execucoes
-execucoes (1) ←→ (N) lojas_dados
-clientes (1) ←→ (N) metricas_periodicas
+lojas (1) ←→ (N) execucoes
+execucoes (1) ←→ (N) dados_estatisticos
+lojas (1) ←→ (N) relatorios
 ```
 
-## 🚨 Troubleshooting
+## 🎯 Principais Funcionalidades do Dashboard
 
-### **Problemas Comuns**
+### **Visão Geral**
+- Métricas em tempo real de todas as lojas
+- Indicadores de performance e status
+- Gráficos de tendências e comparativos
 
-#### **1. Erro de Conexão Supabase**
-- Verificar variáveis de ambiente
-- Verificar credenciais do projeto
-- Verificar permissões das tabelas
+### **Análise Detalhada**
+- Drill-down por loja específica
+- Histórico de dados e evolução
+- Alertas e notificações inteligentes
 
-#### **2. Erro no Playwright**
-```bash
-cd backend
-playwright install chromium
-```
+### **Relatórios**
+- Exportação de dados em Excel/PDF
+- Relatórios personalizáveis
+- Agendamento automático de relatórios
 
-#### **3. Workflows não executam**
-- Verificar GitHub Secrets configuradas
-- Verificar permissões do repositório
-- Verificar branch main
+## 🚨 Solução de Problemas
 
-#### **4. Frontend não carrega dados**
-- Verificar conexão com Supabase
-- Verificar variáveis de ambiente
-- Verificar console do navegador
+### **Problemas Frequentes**
 
-### **Logs e Debugging**
+#### **Dashboard não carrega dados**
+1. Verificar conexão com Supabase
+2. Validar variáveis de ambiente
+3. Checar console do browser para erros
 
-#### **Backend**
-- **Monitoramento:** `log_extracao.log`
-- **Análise:** `analise_supabase.log`
-- **Limpeza:** `limpeza_banco.log`
+#### **Coleta de dados falhando**
+1. Verificar logs em `backend/logs/`
+2. Testar conexão com sites das lojas
+3. Validar credenciais do Supabase
+
+#### **GitHub Actions não executando**
+1. Verificar GitHub Secrets configurados
+2. Checar permissões do repositório
+3. Validar sintaxe dos arquivos .yml
+
+### **Logs e Monitoramento**
+
+#### **Arquivos de Log**
+- **Monitoramento:** `logs/store_monitoring.log`
+- **Sistema:** `logs/system_analysis.log`
+- **Manutenção:** `logs/database_cleanup.log`
 
 #### **GitHub Actions**
-- Acesse `Actions` no GitHub
-- Clique no workflow específico
-- Veja logs detalhados de cada job
+Acesse a aba `Actions` no GitHub para visualizar:
+- Status das execuções
+- Logs detalhados
+- Histórico de performance
 
-## 📈 Monitoramento e Alertas
+## 📈 Recursos de Monitoramento
 
-### **Notificações Telegram**
-- ✅ **Sucesso:** Dados coletados e salvos
-- ❌ **Erro:** Falhas na execução
-- 🧹 **Limpeza:** Banco limpo automaticamente
-- 🔍 **Análise:** Relatórios de diagnóstico
+### **Alertas Inteligentes**
+- ✅ **Sucesso:** Coleta realizada com sucesso
+- ⚠️ **Atenção:** Anomalias detectadas nos dados
+- ❌ **Erro:** Falhas na coleta ou processamento
+- 🔧 **Manutenção:** Sistema em manutenção automática
 
 ### **Métricas de Performance**
-- Tempo de execução por cliente
+- Tempo de resposta das lojas
 - Taxa de sucesso das coletas
 - Volume de dados processados
-- Status das tabelas
+- Disponibilidade do sistema
 
-## 🔧 Desenvolvimento
+## 🔧 Personalização e Extensão
 
-### **Adicionar Novo Cliente**
-1. Inserir na tabela `clientes` do Supabase
-2. Configurar parâmetros de coleta
-3. Testar script localmente
+### **Adicionar Nova Loja**
+1. Inserir configurações na tabela `lojas`
+2. Definir parâmetros de coleta
+3. Testar coleta localmente
 4. Verificar dados no dashboard
 
-### **Modificar Scripts**
-1. Fazer alterações no código
-2. Testar localmente
-3. Commit e push para GitHub
-4. Workflow executa automaticamente
+### **Customizar Dashboard**
+1. Modificar componentes em `frontend/src/components/`
+2. Adicionar novas visualizações
+3. Integrar com APIs externas
+4. Deploy automático via GitHub Actions
 
-### **Adicionar Novas Funcionalidades**
-1. Desenvolver no ambiente local
-2. Testar com dados reais
-3. Documentar mudanças
-4. Deploy via GitHub Actions
+## 📚 Documentação
 
-## 📚 Documentação Adicional
-
-- **Backend:** [backend/README.md](backend/README.md)
-- **Frontend:** [frontend/README.md](frontend/README.md)
-- **Workflows:** [.github/workflows/](.github/workflows/)
+- **API Reference:** [/docs/api.md](/docs/api.md)
+- **Guia do Desenvolvedor:** [/docs/developer-guide.md](/docs/developer-guide.md)
+- **Configuração Avançada:** [/docs/advanced-config.md](/docs/advanced-config.md)
 
 ## 🤝 Contribuição
 
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
 5. Abra um Pull Request
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](frontend/LICENSE) para mais detalhes.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 🆘 Suporte
+## 🆘 Suporte e Comunidade
 
-- **Issues:** [GitHub Issues](https://github.com/RodrigoMD2025/bot-sync-watcher/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/RodrigoMD2025/bot-sync-watcher/discussions)
-- **Documentação:** [Wiki do projeto](https://github.com/RodrigoMD2025/bot-sync-watcher/wiki)
+- **Issues:** [GitHub Issues](https://github.com/seu-usuario/store-monitoring-dashboard/issues)
+- **Discussões:** [GitHub Discussions](https://github.com/seu-usuario/store-monitoring-dashboard/discussions)
+- **Wiki:** [Documentação Completa](https://github.com/seu-usuario/store-monitoring-dashboard/wiki)
 
 ---
 
-**🚀 Bot Sync Watcher - Monitoramento inteligente de lojas em tempo real!**
+**📊 Dashboard de Monitoramento de Lojas Online**  
+**Monitoramento inteligente, análise avançada e insights em tempo real**
 
-**Desenvolvido com ❤️ usando React, Python e Supabase**
+**Desenvolvido com ❤️ usando React, TypeScript, Python e Supabase**
