@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   schedule:
     # Executa a cada 1 horas
-    - cron: '0 */1 * * *'
+    - cron: '0 2 * * *'
     # Limpeza mensal do banco (primeiro dia do mês às 02:00 UTC)
     - cron: '0 2 1 * *'
 
