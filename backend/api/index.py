@@ -10,7 +10,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_OWNER = "RodrigoMD2025"
 REPO_NAME = "store-analytics-dashboard"
 
-@app.route("/bot", methods=["POST"])
+@app.route("/", methods=["POST"])
 def telegram_webhook():
     data = request.get_json()
     
