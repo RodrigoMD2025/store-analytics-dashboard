@@ -16,6 +16,21 @@ from supabase import create_client, Client
 import hashlib
 from dotenv import load_dotenv
 
+# =====================================
+# 🔕 Controle de envio diário (1x/dia)
+# =====================================
+from zoneinfo import ZoneInfo
+from datetime import datetime
+
+def deve_enviar_telegram():
+    """Retorna True se deve enviar o relatório agora (23h SP)"""
+    agora = datetime.now(ZoneInfo("America/Sao_Paulo"))
+    return agora.hour == 23  # Apenas entre 23:00 e 23:59
+
+def execucao_manual():
+    """Detecta se o script foi acionado manualmente via GitHub"""
+    return os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
+
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
@@ -720,9 +735,13 @@ def processar_cliente(browser, cliente_info):
         # Log de sucesso
         log_execucao(cliente_nome, "sucesso", f"Dados salvos no Supabase - {total_lojas} lojas", total_lojas)
         
-        # Enviar notificação via Telegram
+        # Enviar notificação via Telegram (somente 23h ou manual)
         if arquivo_excel:
-            enviar_arquivo_telegram(arquivo_excel, cliente_nome, total_lojas, chat_id, True)
+            if deve_enviar_telegram() or execucao_manual():
+                enviar_arquivo_telegram(arquivo_excel, cliente_nome, total_lojas, chat_id, True)
+                logging.info(f"🕐 Relatório enviado ao Telegram ({'execução manual' if execucao_manual() else 'envio diário às 23h'})")
+            else:
+                logging.info("⏱️ Envio ao Telegram adiado — fora do horário diário (23h)")
             
             # Remover arquivo após envio (no GitHub Actions)
             if os.getenv("GITHUB_ACTIONS"):
