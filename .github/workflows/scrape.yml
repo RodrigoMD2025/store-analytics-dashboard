@@ -78,10 +78,11 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
           GITHUB_ACTIONS: true
-          GERAR_EXCEL: false  # Desabilita Excel para economizar recursos
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GERAR_EXCEL: false
         run: python client_monitor_supabase.py
         working-directory: backend
-      
+
       - name: Check execution status
         if: always()
         run: |
