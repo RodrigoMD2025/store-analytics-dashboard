@@ -10,8 +10,11 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_OWNER = "RodrigoMD2025"
 REPO_NAME = "store-analytics-dashboard"
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET", "POST"])
 def telegram_webhook():
+    if request.method == "GET":
+        return "<html><body><h1>Telegram Bot Webhook</h1><p>The bot is running.</p></body></html>"
+    
     data = request.get_json()
     
     if not data or "message" not in data:
