@@ -1,10 +1,8 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+import sys
+import traceback
 
 app = Flask(__name__)
 
@@ -21,7 +19,7 @@ def telegram_webhook():
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     if missing_vars:
         error_msg = f"Missing environment variables: {', '.join(missing_vars)}"
-        logging.error(error_msg)
+        print(f"ERROR: {error_msg}", file=sys.stderr)
         # Try to notify the admin if the token is present
         if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("AUTHORIZED_CHAT_ID"):
             try:
@@ -30,31 +28,31 @@ def telegram_webhook():
                     "text": f"🚨 Bot Error: {error_msg}",
                 })
             except Exception as e:
-                logging.error(f"Failed to send error notification to Telegram: {e}")
+                print(f"ERROR: Failed to send error notification to Telegram: {e}", file=sys.stderr)
         return jsonify({"ok": False, "error": error_msg}), 500
 
     try:
         if request.method == "GET":
-            logging.info("GET request received, serving status page.")
+            print("INFO: GET request received, serving status page.", file=sys.stderr)
             return "<html><body><h1>Telegram Bot Webhook</h1><p>The bot is running.</p></body></html>"
 
         # Handle POST request
         data = request.get_json()
-        logging.info(f"POST request received: {data}")
+        print(f"INFO: POST request received: {data}", file=sys.stderr)
 
         if not data or "message" not in data:
-            logging.error("Invalid message format")
+            print("ERROR: Invalid message format", file=sys.stderr)
             return jsonify({"ok": False, "error": "Mensagem inválida"}), 400
 
         chat_id = str(data["message"]["chat"]["id"])
         text = data["message"].get("text", "").strip().lower()
 
         if chat_id != str(AUTHORIZED_CHAT_ID):
-            logging.warning(f"Unauthorized chat_id: {chat_id}")
+            print(f"WARNING: Unauthorized chat_id: {chat_id}", file=sys.stderr)
             return jsonify({"ok": True})
 
         if text == "/mdonline":
-            logging.info("Received /mdonline command from authorized user.")
+            print("INFO: Received /mdonline command from authorized user.", file=sys.stderr)
             
             # 1️⃣ Confirm receipt
             requests.post(f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", data={
@@ -74,10 +72,10 @@ def telegram_webhook():
             
             if r.status_code == 204:
                 msg = "✅ Workflow iniciado com sucesso! Aguarde o envio do relatório 📊"
-                logging.info("GitHub Action workflow triggered successfully.")
+                print("INFO: GitHub Action workflow triggered successfully.", file=sys.stderr)
             else:
                 msg = f"❌ Falha ao iniciar workflow. Código: {r.status_code}. Resposta: {r.text}"
-                logging.error(f"Failed to trigger GitHub Action workflow. Status: {r.status_code}, Response: {r.text}")
+                print(f"ERROR: Failed to trigger GitHub Action workflow. Status: {r.status_code}, Response: {r.text}", file=sys.stderr)
 
             requests.post(f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", data={
                 "chat_id": chat_id,
@@ -87,7 +85,8 @@ def telegram_webhook():
         return jsonify({"ok": True})
 
     except Exception as e:
-        logging.error(f"An error occurred in telegram_webhook: {e}", exc_info=True)
+        print(f"FATAL: An error occurred in telegram_webhook: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         return jsonify({"ok": False, "error": "Internal server error"}), 500
 
 def handler(event, context):
