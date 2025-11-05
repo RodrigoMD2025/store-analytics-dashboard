@@ -90,6 +90,7 @@ def main():
                         print(f"INFO: Received message '{text}' from chat_id {chat_id}")
 
                         if chat_id == str(AUTHORIZED_CHAT_ID) and text == "/mdonline":
+                            print("DEBUG: Inside /mdonline command handler.", file=sys.stderr) # New line
                             print("INFO: /mdonline command received from authorized user.")
                             send_telegram_message("🚀 Solicitando relatório antecipado no GitHub Actions...")
                             response_message = trigger_github_action()
