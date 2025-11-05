@@ -11,5 +11,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend code into the container
 COPY backend/ .
 
-# Define the command to run the bot script
-CMD ["python", "bot.py"]
+# Define a simple command to test output
+CMD ["sh", "-c", "echo 'Hello from Docker!' && sleep 5"]
