@@ -102,6 +102,15 @@ def main():
                         print(f"INFO: Received message '{text}' from chat_id {chat_id}")
                         sys.stdout.flush()
 
+                        # Detailed debug prints
+                        print(f"DEBUG: Comparing chat_id: '{chat_id}' (type: {type(chat_id)})")
+                        print(f"DEBUG: With AUTHORIZED_CHAT_ID: '{str(AUTHORIZED_CHAT_ID)}' (type: {type(str(AUTHORIZED_CHAT_ID))})")
+                        print(f"DEBUG: Comparing text: '{text}' (type: {type(text)})")
+                        print(f"DEBUG: With '/mdonline' (type: {type('/mdonline')})")
+                        print(f"DEBUG: chat_id == str(AUTHORIZED_CHAT_ID) is {chat_id == str(AUTHORIZED_CHAT_ID)}")
+                        print(f"DEBUG: text == '/mdonline' is {text == '/mdonline'}")
+                        sys.stdout.flush()
+
                         if chat_id == str(AUTHORIZED_CHAT_ID) and text == "/mdonline":
                             print("DEBUG: Inside /mdonline command handler.", file=sys.stderr)
                             sys.stderr.flush()
