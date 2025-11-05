@@ -16,6 +16,23 @@ REPO_NAME = "store-analytics-dashboard"
 
 @app.route("/", methods=["GET", "POST"])
 def telegram_webhook():
+    # Check for required environment variables first
+    required_vars = ["TELEGRAM_BOT_TOKEN", "AUTHORIZED_CHAT_ID", "GITHUB_TOKEN"]
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    if missing_vars:
+        error_msg = f"Missing environment variables: {', '.join(missing_vars)}"
+        logging.error(error_msg)
+        # Try to notify the admin if the token is present
+        if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("AUTHORIZED_CHAT_ID"):
+            try:
+                requests.post(f"https://api.telegram.org/bot{os.getenv('TELEGRAM_BOT_TOKEN')}/sendMessage", data={
+                    "chat_id": os.getenv("AUTHORIZED_CHAT_ID"),
+                    "text": f"🚨 Bot Error: {error_msg}",
+                })
+            except Exception as e:
+                logging.error(f"Failed to send error notification to Telegram: {e}")
+        return jsonify({"ok": False, "error": error_msg}), 500
+
     try:
         if request.method == "GET":
             logging.info("GET request received, serving status page.")
