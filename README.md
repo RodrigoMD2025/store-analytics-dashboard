@@ -5,7 +5,7 @@ Sistema completo para monitoramento de lojas, coleta de dados e acionamento de r
 ## 🚀 Funcionalidades Principais
 
 - 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda através de um simples comando no Telegram.
--  hourly **Coleta de Dados Contínua:** O sistema roda automaticamente a cada hora para buscar novos dados e alimentar a base de dados.
+- ⌛ **Coleta de Dados Contínua:** O sistema roda automaticamente a cada hora para buscar novos dados e alimentar a base de dados.
 - ☁️ **Deploy Moderno:** A infraestrutura do bot é containerizada com Docker e hospedada na Railway, garantindo estabilidade e escalabilidade.
 - 📈 **Análise e Armazenamento:** Os dados coletados são processados e armazenados de forma segura no Supabase.
 - 🔔 **Notificações Inteligentes:** Receba um balanço diário do status das lojas ou relatórios imediatos quando solicitados manualmente.
