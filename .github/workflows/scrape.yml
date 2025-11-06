@@ -81,7 +81,7 @@ jobs:
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
           GITHUB_ACTIONS: true
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GERAR_EXCEL: false
+          GERAR_EXCEL: true
         run: python client_monitor_supabase.py
         working-directory: backend
 
@@ -204,27 +204,19 @@ jobs:
     if: always()
     
     steps:
-      - name: Check workflow health
+      - name: Notify on failure
+        if: failure()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
         run: |
-          # Verificar status dos jobs anteriores
-          if [ "${{ needs.monitor-lojas.result }}" == "success" ] && [ "${{ needs.limpeza-banco.result }}" != "failure" ]; then
-            STATUS="✅ SUCESSO"
-            MESSAGE="Monitoramento executado com sucesso!"
-          elif [ "${{ needs.monitor-lojas.result }}" == "failure" ]; then
-            STATUS="❌ FALHA"
-            MESSAGE="Erro na execução do monitoramento. Verifique os logs."
-          else
-            STATUS="⚠️ PARCIAL"
-            MESSAGE="Execução parcial com alguns problemas."
-          fi
+          STATUS="❌ FALHA"
+          MESSAGE="O workflow de monitoramento encontrou um erro. Verifique os logs para mais detalhes."
           
           # Enviar notificação para admin
           if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
               -d chat_id="$ADMIN_CHAT_ID" \
-              -d text="🤖 **GitHub Actions - Status da Execução**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Horário:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              -d text="🤖 **GitHub Actions - Alerta de Falha**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Horário:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               -d parse_mode="Markdown"
           fi
