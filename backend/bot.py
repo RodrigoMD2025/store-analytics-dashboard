@@ -9,7 +9,7 @@ import traceback
 
 # --- Configuration ---
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-AUTHORIZED_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
+AUTHORIZED_CHAT_ID = os.getenv("AUTHORIZED_CHAT_ID")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_OWNER = "RodrigoMD2025"
 REPO_NAME = "store-analytics-dashboard"
