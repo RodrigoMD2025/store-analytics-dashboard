@@ -11,5 +11,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend code into the container
 COPY backend/ .
 
-# Define the command to run the bot script
-CMD ["python", "bot.py"]
+# Print all environment variables and then run the bot
+CMD ["sh", "-c", "echo '--- Printing Environment Variables ---' && env && echo '--- Starting Bot ---' && python bot.py"]
