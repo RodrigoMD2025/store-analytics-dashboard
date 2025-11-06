@@ -737,23 +737,24 @@ def processar_cliente(browser, cliente_info):
         log_execucao(cliente_nome, "sucesso", f"Dados salvos no Supabase - {total_lojas} lojas", total_lojas)
         
         # Enviar notificação via Telegram (somente 23h ou manual)
-        if arquivo_excel:
-            if deve_enviar_telegram() or execucao_manual():
+        if deve_enviar_telegram() or execucao_manual():
+            if arquivo_excel:
                 enviar_arquivo_telegram(arquivo_excel, cliente_nome, total_lojas, chat_id, True)
-                logging.info(f"🕐 Relatório enviado ao Telegram ({'execução manual' if execucao_manual() else 'envio diário às 23h'})")
+                logging.info(f"🕐 Relatório em Excel enviado ao Telegram ({'execução manual' if execucao_manual() else 'envio diário às 23h'})")
             else:
-                logging.info("⏱️ Envio ao Telegram adiado — fora do horário diário (23h)")
+                # Enviar apenas notificação de sucesso sem arquivo
+                enviar_notificacao_sucesso_supabase(cliente_nome, resumo, chat_id)
+                logging.info(f"🕐 Notificação de sucesso enviada ao Telegram ({'execução manual' if execucao_manual() else 'envio diário às 23h'})")
             
             # Remover arquivo após envio (no GitHub Actions)
-            if os.getenv("GITHUB_ACTIONS"):
+            if arquivo_excel and os.getenv("GITHUB_ACTIONS"):
                 try:
                     os.remove(arquivo_excel)
                     logging.info(f"Arquivo {arquivo_excel} removido após envio")
                 except Exception:
                     logging.warning(f"Não foi possível remover arquivo {arquivo_excel}")
         else:
-            # Enviar apenas notificação de sucesso sem arquivo
-            enviar_notificacao_sucesso_supabase(cliente_nome, resumo, chat_id)
+            logging.info("⏱️ Envio de notificação ao Telegram adiado — fora do horário diário (23h)")
 
         logging.info(f"✅ Cliente {cliente_nome} processado com sucesso! Dados salvos no Supabase.")
         return True
