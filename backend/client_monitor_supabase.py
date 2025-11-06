@@ -29,7 +29,8 @@ def deve_enviar_telegram():
 
 def execucao_manual():
     """Detecta se o script foi acionado manualmente via GitHub"""
-    return os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch"
+    event_name = os.getenv("GITHUB_EVENT_NAME")
+    return event_name in ["workflow_dispatch", "repository_dispatch"]
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
