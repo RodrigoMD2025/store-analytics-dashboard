@@ -6,7 +6,7 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 
 ### Backend e Automação
 - 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda
-- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada hora
+- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada 30 minutos
 - ☁️ **Deploy Moderno:** Infraestrutura containerizada com Docker na Railway
 - 📈 **Análise e Armazenamento:** Dados processados e armazenados no Supabase
 - 🔔 **Notificações Inteligentes:** Balanço diário e relatórios sob demanda
@@ -267,7 +267,7 @@ npm run build
 ## 📋 Como Usar
 
 ### **Bot Telegram**
-- **Monitoramento Automático:** A cada hora
+- **Monitoramento Automático:** A cada 30 minutos
 - **Relatório Manual:** `/mdonline` a qualquer momento
 - **Relatório Diário:** Às 23h automaticamente
 
