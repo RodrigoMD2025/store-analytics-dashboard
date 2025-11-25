@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Link } from "react-router-dom";
+import { Monitor } from "lucide-react";
 
 interface LojaData {
   id: string;
@@ -78,7 +81,7 @@ export function LojasTable({ lojas }: LojasTableProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Loja</TableHead>
-                <TableHead>Identificador</TableHead>
+                <TableHead>Player ID</TableHead>
                 <TableHead>Atualizado em</TableHead>
                 <TableHead>Tempo de Atraso</TableHead>
                 <TableHead>Status</TableHead>
@@ -88,7 +91,14 @@ export function LojasTable({ lojas }: LojasTableProps) {
               {lojas.map((loja) => (
                 <TableRow key={loja.id}>
                   <TableCell className="font-medium">{loja.loja_nome}</TableCell>
-                  <TableCell>{loja.identificador}</TableCell>
+                  <TableCell>
+                    <Link to={`/player/${loja.identificador}`}>
+                      <Button variant="ghost" size="sm" className="font-mono text-xs hover:bg-primary/10">
+                        <Monitor className="h-3 w-3 mr-2" />
+                        {loja.identificador}
+                      </Button>
+                    </Link>
+                  </TableCell>
                   <TableCell>{formatarData(loja.atualizado_em)}</TableCell>
                   <TableCell>
                     {formatarTempoAtraso(loja.atualizado_em)}

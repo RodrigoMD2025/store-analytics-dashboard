@@ -1,45 +1,95 @@
-# 📊 Dashboard de Análise e Monitoramento de Lojas
+# 📊 Dashboard de Análise e Monitoramento - Music Delivery
 
-Sistema completo para monitoramento de lojas, coleta de dados e acionamento de rotinas via Telegram. O projeto combina um backend em Python, automação com GitHub Actions e um bot interativo hospedado na Railway.
+Sistema completo para monitoramento de lojas, players Music Delivery e coleta de dados com bot interativo no Telegram. O projeto combina backend em Python, automação com GitHub Actions, bot hospedado na Railway e **dashboard web React** para visualização de dados em tempo real.
 
 ## 🚀 Funcionalidades Principais
 
-- 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda através de um simples comando no Telegram.
-- ⌛ **Coleta de Dados Contínua:** O sistema roda automaticamente a cada hora para buscar novos dados e alimentar a base de dados.
-- ☁️ **Deploy Moderno:** A infraestrutura do bot é containerizada com Docker e hospedada na Railway, garantindo estabilidade e escalabilidade.
-- 📈 **Análise e Armazenamento:** Os dados coletados são processados e armazenados de forma segura no Supabase.
-- 🔔 **Notificações Inteligentes:** Receba um balanço diário do status das lojas ou relatórios imediatos quando solicitados manualmente.
+### Backend e Automação
+- 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda
+- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada hora
+- ☁️ **Deploy Moderno:** Infraestrutura containerizada com Docker na Railway
+- 📈 **Análise e Armazenamento:** Dados processados e armazenados no Supabase
+- 🔔 **Notificações Inteligentes:** Balanço diário e relatórios sob demanda
 
----
+### Dashboard Web (NOVO! 🎉)
+- 🖥️ **Interface Moderna:** Dashboard React com TypeScript e Tailwind CSS
+- 📊 **Visualização de Dados:** Gráficos interativos e tabelas dinâmicas
+- 🎯 **Monitoramento de Players:** Integração completa com Music Delivery Player
+- 🔍 **Detalhes do Player:** Página dedicada com informações completas de sincronização
+- 🌓 **Modo Escuro/Claro:** Alternância de tema com persistência
+- 📱 **Responsivo:** Interface adaptativa para desktop e mobile
+- ⚡ **Navegação Intuitiva:** Click no Player ID abre detalhes completos
 
 ## 🏗️ Arquitetura e Funcionamento
+
+### Coleta de Dados (Backend)
 
 O sistema opera de duas formas principais:
 
 1.  **Execução Agendada (a cada hora):**
-    *   Um workflow do **GitHub Actions** (`scrape.yml`) é executado automaticamente a cada hora.
-    *   Ele roda o script `client_monitor_supabase.py`, que coleta e salva os dados no **Supabase**.
-    *   Se a execução for a das 23h, um relatório consolidado é enviado para o **Telegram**.
+    *   Workflow do **GitHub Actions** (`scrape.yml`) executado automaticamente
+    *   Script `client_monitor_supabase.py` coleta e salva dados no **Supabase**
+    *   Às 23h, relatório consolidado é enviado para o **Telegram**
 
 2.  **Execução Manual (via Telegram):**
-    *   Você envia o comando `/mdonline` para o seu bot no Telegram.
-    *   O bot, rodando 24/7 na **Railway** (`bot.py`), recebe o comando.
-    *   O bot faz uma chamada de API para o **GitHub Actions**, disparando o workflow `scrape.yml` imediatamente.
-    *   O workflow executa a coleta de dados e, por se tratar de uma execução manual, envia o relatório de volta para você no Telegram assim que termina.
+    *   Comando `/mdonline` enviado ao bot
+    *   Bot na **Railway** (`bot.py`) dispara o workflow via API
+    *   Relatório enviado imediatamente após a coleta
+
+### Dashboard Frontend (NOVO!)
+
+O dashboard web permite visualização e monitoramento em tempo real:
+
+- **Página Principal (`/`)**:
+  - Overview geral com métricas de lojas
+  - Gráficos de sincronização
+  - Tabela de lojas com status
+  - **Link direto** no Player ID para detalhes
+
+- **Detalhes do Player (`/player/:uid`)**:
+  - Métricas de sincronização (Music e Sazonal)
+  - Status da playlist (Sincronizada/Atrasada)
+  - Total de spots ativos
+  - **Lista completa** de arquivos por pasta:
+    - 📁 Playlist Principal (music)
+    - 📅 Pasta Sazonal
+    - 📻 Pasta Spots
+  - Informações do sistema (UID, CNPJ formatado, arquivos faltantes)
+
+- **Execuções Diárias (`/daily-executions`)**:
+  - Histórico de execuções
+  - Logs detalhados
 
 ### Estrutura de Arquivos
 
 ```
 store-analytics-dashboard/
-├── frontend/                 # (Opcional) Dashboard React
+├── frontend/                      # Dashboard React + TypeScript
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── dashboard/         # Componentes do dashboard
+│   │   │   ├── players/           # Componentes de players (NOVO)
+│   │   │   └── ui/                # Componentes UI (shadcn/ui)
+│   │   ├── hooks/
+│   │   │   ├── useDashboardData.ts
+│   │   │   ├── usePlayerMonitoring.ts
+│   │   │   └── usePlayerDetails.ts  # (NOVO)
+│   │   ├── pages/
+│   │   │   ├── Index.tsx           # Página principal
+│   │   │   ├── PlayerDetails.tsx    # Detalhes do player (NOVO)
+│   │   │   └── DailyExecutions.tsx
+│   │   ├── integrations/supabase/
+│   │   └── App.tsx
+│   ├── package.json
+│   └── vite.config.ts
 ├── backend/
-│   ├── client_monitor_supabase.py  # Script principal de coleta e análise
-│   ├── bot.py                     # Bot do Telegram (Long Polling)
-│   └── requirements.txt         # Dependências Python
+│   ├── client_monitor_supabase.py   # Script de coleta
+│   ├── bot.py                      # Bot Telegram
+│   └── requirements.txt
 ├── .github/workflows/
-│   └── scrape.yml               # Workflow de coleta (agendada e manual)
-├── Dockerfile                # Define o ambiente do bot para a Railway
-└── README.md                 # Esta documentação
+│   └── scrape.yml                  # Workflow de coleta
+├── Dockerfile
+└── README.md
 ```
 
 ---
@@ -47,21 +97,26 @@ store-analytics-dashboard/
 ## 🛠️ Stack Tecnológica
 
 ### **Backend & Automação**
-- **Python 3.11+** para processamento de dados e o bot.
-- **Playwright** para coleta automatizada de dados (web scraping).
-- **Pandas** para análise e manipulação de dados.
-- **Docker** para containerização do ambiente do bot.
-- **GitHub Actions** para CI/CD e automação das coletas.
+- **Python 3.11+** para processamento de dados e bot
+- **Playwright** para web scraping automatizado
+- **Pandas** para análise e manipulação de dados
+- **Docker** para containerização
+- **GitHub Actions** para CI/CD e automação
 
 ### **Infraestrutura**
-- **Railway** para hospedagem do bot de Long Polling.
-- **Supabase** como banco de dados (PostgreSQL) e plataforma de backend.
+- **Railway** para hospedagem do bot (Long Polling)
+- **Supabase** como banco de dados (PostgreSQL) e backend
+- **GitHub Pages** para hospedagem do dashboard (produção)
 
 ### **Frontend (Dashboard)**
-- **React 18** com **TypeScript**.
-- **Vite** para um ambiente de desenvolvimento rápido.
-- **Tailwind CSS** e **shadcn/ui** para a interface.
-- **Recharts** para visualização de dados.
+- **React 18** com **TypeScript**
+- **Vite** para desenvolvimento rápido
+- **Tailwind CSS** para estilização
+- **shadcn/ui** para componentes de UI
+- **Recharts** para gráficos e visualizações
+- **React Router** para navegação
+- **React Query** para gerenciamento de dados
+- **date-fns** para formatação de datas
 
 ---
 
@@ -69,52 +124,60 @@ store-analytics-dashboard/
 
 ### **Pré-requisitos**
 
-- Conta no GitHub.
-- Conta na [Railway](https://railway.app/).
-- Conta no [Supabase](https://supabase.com/).
-- Um bot criado no Telegram (via [BotFather](https://t.me/botfather)).
-- Node.js 18+ e Python 3.11+ instalados localmente.
+- Conta no GitHub
+- Conta na [Railway](https://railway.app/)
+- Conta no [Supabase](https://supabase.com/)
+- Bot do Telegram (via [BotFather](https://t.me/botfather))
+- Node.js 18+ e Python 3.11+ instalados localmente
 
 ### **1. Variáveis de Ambiente**
 
-Você precisará dos seguintes tokens e IDs. Guarde-os em um local seguro.
-
 #### Backend & Bot
-- `TELEGRAM_BOT_TOKEN`: Token do seu bot, fornecido pelo BotFather.
-- `AUTHORIZED_CHAT_ID`: O ID do seu chat no Telegram. Você pode descobri-lo enviando uma mensagem para o bot `@userinfobot`.
-- `GITHUB_TOKEN`: Um Personal Access Token (PAT) do GitHub. [Crie um aqui](https://github.com/settings/tokens/new) com a permissão `repo`.
-- `SUPABASE_URL`: URL do seu projeto no Supabase.
-- `SUPABASE_KEY`: A chave `service_role` do seu projeto no Supabase.
+- `TELEGRAM_BOT_TOKEN`: Token do bot (BotFather)
+- `AUTHORIZED_CHAT_ID`: ID do chat no Telegram
+- `GITHUB_TOKEN`: Personal Access Token com permissão `repo`
+- `SUPABASE_URL`: URL do projeto Supabase
+- `SUPABASE_KEY`: Chave `service_role` do Supabase
 
 #### Frontend (Dashboard)
-Crie um arquivo `.env.local` na pasta `frontend/` com o seguinte conteúdo:
+Crie `.env.local` na pasta `frontend/`:
 ```env
 VITE_SUPABASE_URL=sua_url_do_supabase
 VITE_SUPABASE_ANON_KEY=sua_chave_publica_anon_supabase
 ```
 
-### **2. Configuração do GitHub Secrets**
+### **2. Estrutura do Banco de Dados (Supabase)**
 
-No seu repositório no GitHub, vá em `Settings > Secrets and variables > Actions` e adicione os seguintes "Repository secrets":
+O sistema utiliza as seguintes tabelas:
+
+- **`lojas_dados`**: Informações das lojas cadastradas
+- **`monitoring_status`**: Status de sincronização dos players
+- **`music_files`**: Arquivos de música por pasta (music, sazonal, spots)
+- **`clientes`**: Dados dos clientes
+- **`execucoes`**: Histórico de execuções
+- **`logs_execucao`**: Logs detalhados
+
+### **3. Configuração do GitHub Secrets**
+
+No repositório GitHub, vá em `Settings > Secrets and variables > Actions`:
 
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
 - `TELEGRAM_BOT_TOKEN`
-- `ADMIN_CHAT_ID` (use o mesmo valor do `AUTHORIZED_CHAT_ID`)
+- `ADMIN_CHAT_ID`
 
-### **3. Deploy do Bot na Railway**
+### **4. Deploy do Bot na Railway**
 
-1.  **Crie um Novo Projeto:** No painel da Railway, crie um novo projeto a partir do seu repositório do GitHub.
-2.  **Adicione as Variáveis:** Vá para a aba **"Variables"** e adicione as variáveis do backend (`TELEGRAM_BOT_TOKEN`, `AUTHORIZED_CHAT_ID`, `GITHUB_TOKEN`).
-3.  **Configure o Deploy:** Vá para a aba **"Settings"** e garanta que o campo **"Start Command"** esteja **vazio**. A Railway usará o `Dockerfile` automaticamente.
-4.  **Faça o Deploy:** A Railway fará o deploy do seu bot. Nos logs, você deverá ver as mensagens `Bot started in long polling mode`.
+1. Crie projeto a partir do repositório GitHub
+2. Adicione variáveis na aba **"Variables"**
+3. Deixe **"Start Command"** vazio (usa Dockerfile)
+4. Deploy automático
 
-### **4. Apague o Webhook do Telegram**
+### **5. Configuração do Telegram**
 
-É **essencial** que não haja nenhum webhook configurado. Execute o comando abaixo no seu navegador (substituindo seu token) para garantir que ele seja apagado:
-
+Remova webhooks existentes:
 ```
-https://api.telegram.org/bot<SEU_TELEGRAM_BOT_TOKEN>/setWebhook?url=
+https://api.telegram.org/bot<SEU_TOKEN>/setWebhook?url=
 ```
 
 ---
@@ -126,16 +189,14 @@ https://api.telegram.org/bot<SEU_TELEGRAM_BOT_TOKEN>/setWebhook?url=
 ```bash
 cd backend
 
-# Crie e ative um ambiente virtual
+# Ambiente virtual
 python -m venv venv
-source venv/bin/activate  # Linux/Mac ou venv\Scripts\activate.bat no Windows
+source venv/bin/activate  # ou venv\Scripts\activate no Windows
 
-# Instale as dependências
+# Dependências
 pip install -r requirements.txt
 
-# Crie um arquivo .env com as variáveis do backend
-
-# Execute o bot localmente
+# Execute o bot
 python bot.py
 ```
 
@@ -144,18 +205,151 @@ python bot.py
 ```bash
 cd frontend
 
-# Instale as dependências
+# Dependências
 npm install
 
-# Execute o servidor de desenvolvimento
+# Desenvolvimento
 npm run dev
 
-# Acesse http://localhost:5173
+# Produção (build)
+npm run build
+
+# Preview da build
+npm run preview
+```
+
+Acesse: `http://localhost:8080`
+
+---
+
+## 🌐 Deploy do Dashboard (GitHub Pages)
+
+### **Configuração do Vite**
+
+O `vite.config.ts` já está configurado para GitHub Pages:
+
+```typescript
+export default defineConfig({
+  base: '/store-analytics-dashboard/',  // Nome do seu repositório
+  // ...
+});
+```
+
+### **Deploy Automático**
+
+1. **Commit e Push:**
+   ```bash
+   git add .
+   git commit -m "chore: deploy dashboard to GitHub Pages"
+   git push origin main
+   ```
+
+2. **Configurar GitHub Pages:**
+   - Vá em `Settings > Pages`
+   - Source: `GitHub Actions`
+   - O workflow `.github/workflows/deploy.yml` fará o deploy automaticamente
+
+3. **Acesse:**
+   ```
+   https://[SEU-USUARIO].github.io/store-analytics-dashboard/
+   ```
+
+### **Build Manual**
+
+```bash
+cd frontend
+npm run build
+# Arquivos gerados em: frontend/dist/
 ```
 
 ---
 
 ## 📋 Como Usar
 
-- **Monitoramento Automático:** Acontece a cada hora. Um relatório consolidado é enviado todo dia às 23h.
-- **Relatório Manual:** Envie a mensagem `/mdonline` para o seu bot no Telegram a qualquer momento para receber um relatório atualizado imediatamente.
+### **Bot Telegram**
+- **Monitoramento Automático:** A cada hora
+- **Relatório Manual:** `/mdonline` a qualquer momento
+- **Relatório Diário:** Às 23h automaticamente
+
+### **Dashboard Web**
+1. **Acesse** o dashboard (local ou GitHub Pages)
+2. **Página Principal:**
+   - Visualize métricas gerais
+   - Veja tabela de lojas
+   - Clique no **Player ID** (botão com ícone de monitor)
+3. **Detalhes do Player:**
+   - Métricas de sincronização
+   - Status da playlist
+   - Lista completa de arquivos
+   - Informações do sistema
+4. **Tema:**
+   - Clique no ícone Lua/Sol para alternar modo claro/escuro
+
+---
+
+## 🎨 Funcionalidades do Dashboard
+
+### **Integração Music Delivery Player**
+
+O dashboard se integra completamente com o Music Delivery Player:
+
+- ✅ Monitoramento em tempo real de sincronização
+- ✅ Status Music, Sazonal e Spots
+- ✅ Lista completa de arquivos (sem limite)
+- ✅ CNPJ formatado (XX.XXX.XXX/YYYY-ZZ)
+- ✅ Arquivos faltantes com texto (N Faixa/Faixas)
+- ✅ Status consistente (Sincronizada/Atrasada)
+- ✅ Navegação por UUID completo
+
+### **Navegação**
+
+- **`/`** - Dashboard principal
+- **`/player/:uid`** - Detalhes do player específico
+- **`/daily-executions`** - Histórico de execuções
+
+### **Tema Escuro/Claro**
+
+- Detecta preferência do sistema automaticamente
+- Salva preferência do usuário (localStorage)
+- Funciona em todas as páginas
+
+---
+
+## 🔧 Manutenção
+
+### **Atualizar Dependências**
+
+```bash
+# Backend
+cd backend
+pip install --upgrade -r requirements.txt
+
+# Frontend
+cd frontend
+npm update
+```
+
+### **Verificar Logs**
+
+- **Railway:** Logs do bot em tempo real
+- **GitHub Actions:** Logs de execução dos workflows
+- **Supabase:** Queries e dados no painel
+
+---
+
+## 📝 Notas Importantes
+
+1. **Credenciais Supabase:** As chaves estão hardcoded no `frontend/src/integrations/supabase/client.ts` (apenas chave pública ANON)
+2. **RLS (Row Level Security):** Configure políticas adequadas no Supabase para segurança
+3. **Limitações GitHub Pages:** Deploy estático, sem backend
+4. **Dados em Tempo Real:** Dashboard busca dados diretamente do Supabase
+
+---
+
+## 📄 Licença
+
+Este projeto é privado e de uso interno.
+
+---
+
+**Desenvolvido com ❤️ para Music Delivery**

@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { BarChart3, Zap } from "lucide-react";
 
 interface DashboardHeaderProps {
@@ -26,20 +27,22 @@ export function DashboardHeader({ totalClientes, ultimaAtualizacao }: DashboardH
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
+
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Total de clientes</p>
               <p className="text-xl font-semibold text-foreground">{totalClientes}</p>
             </div>
-            
-            <Badge variant="secondary" className="flex items-center gap-1">
+
+            <Badge className="flex items-center gap-1 bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20">
               <Zap className="h-3 w-3" />
               Online
             </Badge>
           </div>
         </div>
-        
+
         {ultimaAtualizacao && (
           <div className="mt-4 pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground">
