@@ -4,8 +4,8 @@ on:
   repository_dispatch:
     types: [executar_mdonline]
   schedule:
-    # Executa a cada 1 hora
-    - cron: '0 */1 * * *'
+    # Executa a cada 30 minutos
+    - cron: '*/30 * * * *'
     # Limpeza mensal do banco (primeiro dia do mês às 02:00 UTC)
     - cron: '0 2 1 * *'
 
