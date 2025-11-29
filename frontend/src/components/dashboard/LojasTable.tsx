@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Link } from "react-router-dom";
-import { Monitor } from "lucide-react";
+import { Monitor, Download } from "lucide-react";
 
 interface LojaData {
   id: string;
@@ -55,6 +55,36 @@ export function LojasTable({ lojas }: LojasTableProps) {
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ["Loja", "Player ID", "Atualizado Em", "Tempo de Atraso", "Status"];
+    const rows = lojas.map(loja => [
+      loja.loja_nome,
+      loja.identificador,
+      formatarData(loja.atualizado_em),
+      formatarTempoAtraso(loja.atualizado_em),
+      loja.sincronizada ? "Sincronizada" : "Atrasada"
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset-utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    const clienteNome = lojas.length > 0 ? lojas[0].loja_nome.split(' ')[0] : 'cliente';
+    link.setAttribute("href", url);
+    link.setAttribute("download", `detalhes-lojas-${clienteNome}-${timestamp}.csv`);
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (lojas.length === 0) {
     return (
       <Card>
@@ -73,7 +103,18 @@ export function LojasTable({ lojas }: LojasTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Detalhes das Lojas</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Detalhes das Lojas</CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Exportar CSV
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
