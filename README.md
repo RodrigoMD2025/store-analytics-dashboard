@@ -16,9 +16,39 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 - 📊 **Visualização de Dados:** Gráficos interativos e tabelas dinâmicas
 - 🎯 **Monitoramento de Players:** Integração completa com Music Delivery Player
 - 🔍 **Detalhes do Player:** Página dedicada com informações completas de sincronização
-- 🌓 **Modo Escuro/Claro:** Alternância de tema com persistência
+- 🌓 **Modo Escuro/Claro:** Alternância de tema com persistência (melhorado!)
 - 📱 **Responsivo:** Interface adaptativa para desktop e mobile
 - ⚡ **Navegação Intuitiva:** Click no Player ID abre detalhes completos
+- 🔎 **Busca Inteligente:** Filtro em tempo real na tabela de clientes
+- 📄 **Paginação Automática:** Ativa quando > 50 clientes para melhor performance
+- 📥 **Exportação CSV:** Exporte resumos por cliente ou detalhes de lojas individuais
+
+#### **Novas Funcionalidades da Tabela** (Nov 2024)
+
+**Vista de Resumo por Cliente:**
+- Tabela agregada quando nenhum filtro está ativo
+- Mostra: Total de Lojas | Sincronizadas | Atrasadas | Taxa de Sucesso
+- Ordenação automática por número de lojas
+- Click na linha filtra para aquele cliente
+
+**Busca e Filtro:**
+- Campo de busca em tempo real
+- Contador dinâmico de resultados
+- Reset automático de paginação ao buscar
+
+**Paginação Inteligente:**
+- Ativa automaticamente quando > 50 clientes
+- 20 itens por página
+- Controles: Primeira | Anterior | Próxima | Última
+- Indicador: "Mostrando X-Y de Z clientes"
+
+**Exportação CSV:**
+- **Resumo Geral:** Exporta tabela de clientes com estatísticas
+  - Arquivo: `resumo-clientes-YYYY-MM-DD.csv`
+- **Detalhes por Cliente:** Exporta lojas individuais quando filtrado
+  - Arquivo: `detalhes-lojas-{cliente}-YYYY-MM-DD.csv`
+- UTF-8 BOM para compatibilidade com Excel
+- Dados formatados com aspas para campos complexos
 
 ## 🏗️ Arquitetura e Funcionamento
 
@@ -43,7 +73,12 @@ O dashboard web permite visualização e monitoramento em tempo real:
 - **Página Principal (`/`)**:
   - Overview geral com métricas de lojas
   - Gráficos de sincronização
-  - Tabela de lojas com status
+  - **Tabela de Resumo:** Vista agregada por cliente (padrão)
+    - Busca em tempo real
+    - Paginação automática (>50 clientes)
+    - Exportação CSV do resumo
+  - **Tabela Detalhada:** Lojas individuais quando cliente selecionado
+    - Exportação CSV das lojas
   - **Link direto** no Player ID para detalhes
 
 - **Detalhes do Player (`/player/:uid`)**:
@@ -68,6 +103,9 @@ store-analytics-dashboard/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── dashboard/         # Componentes do dashboard
+│   │   │   │   ├── ClienteSummaryTable.tsx  # Tabela de resumo (NOVO)
+│   │   │   │   ├── LojasTable.tsx           # Tabela de detalhes
+│   │   │   │   └── ...
 │   │   │   ├── players/           # Componentes de players (NOVO)
 │   │   │   └── ui/                # Componentes UI (shadcn/ui)
 │   │   ├── hooks/
@@ -272,22 +310,55 @@ npm run build
 - **Relatório Diário:** Às 23h automaticamente
 
 ### **Dashboard Web**
+
+#### **Navegação Principal**
 1. **Acesse** o dashboard (local ou GitHub Pages)
 2. **Página Principal:**
    - Visualize métricas gerais
-   - Veja tabela de lojas
-   - Clique no **Player ID** (botão com ícone de monitor)
-3. **Detalhes do Player:**
+   - **Vista Padrão:** Tabela de resumo por cliente
+   - **Buscar:** Digite no campo de busca para filtrar clientes
+   - **Exportar Resumo:** Clique em "Exportar CSV" para baixar estatísticas de todos os clientes
+   - **Ver Detalhes:** Clique em uma linha do cliente para ver lojas individuais
+
+#### **Vista Detalhada por Cliente**
+3. **Após selecionar um cliente:**
+   - Vê tabela com lojas individuais
+   - Clique no **Player ID** (botão com ícone de monitor) para detalhes completos
+   - **Exportar Lojas:** Clique em "Exportar CSV" para baixar detalhes das lojas deste cliente
+
+#### **Detalhes do Player**
+4. **Detalhes do Player:**
    - Métricas de sincronização
    - Status da playlist
    - Lista completa de arquivos
    - Informações do sistema
-4. **Tema:**
+
+#### **Tema**
+5. **Modo Escuro/Claro:**
    - Clique no ícone Lua/Sol para alternar modo claro/escuro
+   - Tema salvo automaticamente
 
 ---
 
 ## 🎨 Funcionalidades do Dashboard
+
+### **Tabela de Resumo por Cliente** (Novo!)
+
+Quando nenhum filtro está ativo, a tabela mostra:
+
+| Cliente | Total de Lojas | Lojas Sincronizadas | Lojas Atrasadas | Taxa de Sucesso |
+|---------|----------------|---------------------|-----------------|-----------------|
+| Cliente A | 40 | 35 | 5 | 88% |
+| Cliente B | 10 | 10 | 0 | 100% |
+| Cliente C | 4 | 2 | 2 | 50% |
+
+**Funcionalidades:**
+- ✅ Busca em tempo real por nome
+- ✅ Contador de resultados
+- ✅ Paginação automática (>50 clientes)
+- ✅ Ordenação por total de lojas
+- ✅ Click para drill-down
+- ✅ Exportação CSV
 
 ### **Integração Music Delivery Player**
 
@@ -303,7 +374,7 @@ O dashboard se integra completamente com o Music Delivery Player:
 
 ### **Navegação**
 
-- **`/`** - Dashboard principal
+- **`/`** - Dashboard principal (resumo ou detalhes por cliente)
 - **`/player/:uid`** - Detalhes do player específico
 - **`/daily-executions`** - Histórico de execuções
 
@@ -312,6 +383,7 @@ O dashboard se integra completamente com o Music Delivery Player:
 - Detecta preferência do sistema automaticamente
 - Salva preferência do usuário (localStorage)
 - Funciona em todas as páginas
+- **Melhorado:** Cards com melhor contraste e sombras no modo escuro
 
 ---
 
