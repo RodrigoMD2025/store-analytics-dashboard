@@ -1,6 +1,8 @@
 export * from './ClienteSelect';
-export * from './DashboardHeader';
-export * from './LojasTable';
-export * from './MetricCard';
-export * from './RecentLogs';
-export * from './SyncChart';
+export { DashboardHeader } from './DashboardHeader';
+export { MetricCard } from './MetricCard';
+export { SyncChart } from './SyncChart';
+export { ClienteSelect } from './ClienteSelect';
+export { RecentLogs } from './RecentLogs';
+export { LojasTable } from './LojasTable';
+export { ClienteSummaryTable } from './ClienteSummaryTable';
