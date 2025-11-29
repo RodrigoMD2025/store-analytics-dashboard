@@ -5,14 +5,15 @@ import { SyncChart } from "@/components/dashboard/SyncChart";
 import { ClienteSelect } from "@/components/dashboard/ClienteSelect";
 import { RecentLogs } from "@/components/dashboard/RecentLogs";
 import { LojasTable } from "@/components/dashboard/LojasTable";
+import { ClienteSummaryTable } from "@/components/dashboard/ClienteSummaryTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { 
-  Store, 
-  CheckCircle, 
-  XCircle, 
-  TrendingUp, 
+import {
+  Store,
+  CheckCircle,
+  XCircle,
+  TrendingUp,
   Activity,
   Calendar,
   Users
@@ -92,11 +93,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader 
+      <DashboardHeader
         totalClientes={stats.totalClientes}
         ultimaAtualizacao={stats.ultimaExecucao}
       />
-      
+
       <div className="container mx-auto px-4 py-6">
         <div className="grid gap-6">
           {/* Filtros */}
@@ -120,7 +121,7 @@ const Index = () => {
               icon={Store}
               variant="default"
             />
-            
+
             <MetricCard
               title="Lojas Sincronizadas"
               value={stats.totalSincronizadas.toLocaleString('pt-BR')}
@@ -128,7 +129,7 @@ const Index = () => {
               icon={CheckCircle}
               variant="success"
             />
-            
+
             <MetricCard
               title="Lojas Atrasadas"
               value={stats.totalAtrasadas.toLocaleString('pt-BR')}
@@ -136,7 +137,7 @@ const Index = () => {
               icon={XCircle}
               variant="danger"
             />
-            
+
             <MetricCard
               title="Taxa de Sucesso"
               value={`${stats.sucessos + stats.erros > 0 ? ((stats.sucessos / (stats.sucessos + stats.erros)) * 100).toFixed(1) : 0}%`}
@@ -159,12 +160,22 @@ const Index = () => {
                 <SyncChart data={chartData} />
               </CardContent>
             </Card>
-            
+
             <RecentLogs logs={logs} />
           </div>
 
-          {/* Tabela de lojas */}
-          <LojasTable lojas={lojas} />
+          {/* Tabela de lojas ou resumo por cliente */}
+          {selectedCliente === null ? (
+            <ClienteSummaryTable
+              lojas={lojas}
+              onClienteClick={(clienteNome) => {
+                const cliente = clientes.find(c => c.nome === clienteNome);
+                if (cliente) setSelectedCliente(cliente.id);
+              }}
+            />
+          ) : (
+            <LojasTable lojas={lojas} />
+          )}
 
           {/* Estatísticas adicionais */}
           <div className="grid gap-4 md:grid-cols-3">
@@ -175,7 +186,7 @@ const Index = () => {
               icon={Calendar}
               variant="default"
             />
-            
+
             <MetricCard
               title="Clientes Ativos"
               value={stats.totalClientes}
@@ -183,7 +194,7 @@ const Index = () => {
               icon={Users}
               variant="default"
             />
-            
+
             <MetricCard
               title="Última Execução"
               value="Recente"

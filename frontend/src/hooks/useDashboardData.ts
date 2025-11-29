@@ -21,6 +21,7 @@ interface LojaData {
   id: string;
   loja_nome: string;
   identificador: string;
+  cliente_nome: string;
   atualizado_em: string;
   sincronizada: boolean;
   tempo_atraso_horas: number;
@@ -52,7 +53,7 @@ export function useDashboardData(clienteId: string | null = null) {
     sucessos: 0,
     erros: 0
   });
-  
+
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [logs, setLogs] = useState<LogExecucao[]>([]);
   const [lojas, setLojas] = useState<LojaData[]>([]);
@@ -61,7 +62,7 @@ export function useDashboardData(clienteId: string | null = null) {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      
+
       try {
         // Buscar clientes
         const { data: clientesData, error: clientesError } = await supabase
@@ -159,6 +160,7 @@ export function useDashboardData(clienteId: string | null = null) {
           id: loja.id,
           loja_nome: loja.loja_nome,
           identificador: loja.identificador,
+          cliente_nome: loja.cliente_nome,
           atualizado_em: loja.atualizado_em,
           sincronizada: loja.sincronizada,
           tempo_atraso_horas: loja.tempo_atraso_horas,
@@ -174,19 +176,19 @@ export function useDashboardData(clienteId: string | null = null) {
         const totalLojas = lojasFormatadas.length;
         const sincronizadas = lojasFormatadas.filter(loja => loja.sincronizada).length;
         const atrasadas = totalLojas - sincronizadas;
-        
+
         const sucessos = logsData ? logsData.filter(log => log.status === 'sucesso').length : 0;
         const erros = logsData ? logsData.filter(log => log.status === 'erro').length : 0;
-        
+
         const hoje = new Date().toDateString();
-        const executacoesHoje = logsData ? logsData.filter(log => 
+        const executacoesHoje = logsData ? logsData.filter(log =>
           new Date(log.executado_em).toDateString() === hoje
         ).length : 0;
-        
-        const ultimaExecucao = logsData && logsData.length > 0 
+
+        const ultimaExecucao = logsData && logsData.length > 0
           ? new Date(logsData[0].executado_em)
           : new Date();
-        
+
         setStats({
           totalLojas,
           totalSincronizadas: sincronizadas,
@@ -198,14 +200,14 @@ export function useDashboardData(clienteId: string | null = null) {
           sucessos,
           erros
         });
-        
+
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadData();
   }, [clienteId]);
 
