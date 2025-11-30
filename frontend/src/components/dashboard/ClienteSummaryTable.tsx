@@ -216,7 +216,7 @@ export function ClienteSummaryTable({ lojas, onClienteClick }: ClienteSummaryTab
                                     <TableCell className="text-center">
                                         <Badge
                                             variant={
-                                                cliente.taxaSucesso === 100 ? "default" :
+                                                cliente.taxaSucesso === 100 ? "success" :
                                                     cliente.taxaSucesso >= 70 ? "warning" :
                                                         "destructive"
                                             }
