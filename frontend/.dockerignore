@@ -1,0 +1,9 @@
+# Evitar copiar arquivos desnecessários para a imagem do frontend
+node_modules
+dist
+.env
+.git
+.github
+README.md
+docs
+backend
