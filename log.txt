@@ -1,0 +1,67 @@
+fabbc057391d4044760b26300010843ea4e014d5|feat: add local Docker infrastructure
+1b4156e849eebd01eb7126ba2d3db751bddb6537|fix: Change 100% badge from blue to green
+95f0b2a5f628f03309f3564a405e27ca1a31dd3e|feat: Update badge colors for success rate
+1a2763176d0f3b2c1743656609e025f7e77edbd1|docs: Update README with new dashboard features
+41450d991e06b20d75e6f393ef9150cb95da774d|feat: Add CSV export to individual store details table
+0d7d3ba4f79c537463b2e1b8151ffdd5045480eb|feat: Enhanced ClienteSummaryTable with search, pagination, and export
+ccd6406e77aea2424c24304f82938fdd09d4070e|feat: Redesign main table with client summary view
+b599d4e385095324df1d206a0ea42b8008622421|fix: Properly restore dark mode with improved card visibility
+cab6dfe4b9e5e5e2baab5552382e026563491782|style: Restore and improve dark mode UI
+2d6750eafcdae7bc44c72bf96737cbc485b741f7|style: Improve dark mode UI
+c76437fdbde990f7f637284bfe3ef1130f8fcaf1|chore: reduce scrape schedule from hourly to every 30 minutes
+81a9335952d9869035fb6e8af9c6991c1feaccd0|feat: add player monitoring integration and dashboard improvements
+376eac0be2baf4b94064fbb6551e8f905b2d7357|fix: Enable Excel report and notify on failure only
+46fe794af51d3d01625a670bc0f7cced3d85560c|docs: Remove redundant backend README.md
+843667759f8b5e7acbe45625fc484a76ba241a71|Merge branch 'main' of https://github.com/RodrigoMD2025/store-analytics-dashboard
+cef7d6aecaa46735d32c8d40977a2ca4516916c6|docs: Consolidate documentation into main README
+fe5e7e628db2c854041e4228c1a76aab153a5ed1|Update README.md
+e588eb52aab6912461fc9e801e1a03369b2f629a|fix: Correct notification logic and update schedule
+4c10d840f471441ef69e6ca9f399e43e35927de1|docs: Update README.md with new architecture and instructions
+d76e6f7b38c65e5fb84c1a0aa9e4701f1c3b8996|feat: Run scraper hourly and fix manual trigger detection
+e2049512140e6f86ed43424386991d5c778c33e6|fix: Correct environment variable name and revert Dockerfile
+58542791af2bed125d3cfae9c6251a9f348cc227|test: Print env vars in Docker CMD for debugging
+a419495d1d2748e8ebec282dd332c17c4a6316b7|feat: Add detailed debug logs for command handler
+d0978f70cf5e9abd9f2e959c381d124da2590edc|fix: Add aggressive flushing to logs for debugging
+cfa791aa79d119fb7688283ebe6d6664505b70ec|fix: Revert Dockerfile CMD to run bot.py
+20690730f0e80ef51af5eca30cb8413bc6d4a023|test: Add simple CMD to Dockerfile for output test
+9d3950e66f5f33f19df2a28b9c683e15ff658c40|feat: Add debug log for /mdonline command handler
+2b9de9c0f663653f55a74695b6dfe8a89ea8c690|fix: Re-add Dockerfile for long polling worker
+81559f471290d43ee1bbff7c41f138c0687704ba|refactor: Convert bot from webhook to long polling
+b29c28eb0dd17ced1493a124900d9ae2daa7ad9b|feat: Add Dockerfile for Railway deployment
+6479717dff079261987d288995aa175605d10b46|chore: Add gunicorn for Railway deployment
+9ee9d8aad2004c54bdaeb0ccd11f5f33e697a6dc|fix: Revert vercel.json and improve logging
+31ea2be1e34f4a4b01f3026c17b439ff474ba75d|fix: Adjust vercel.json paths for backend root directory
+e31ac6e338c162a552acefe7f679bef1b35be7c8|fix: Add explicit environment variable check for debugging
+5e83f85330e8a79b6c0413343fd67376c148506b|fix: Add exception handling and logging to bot
+b12fb0689eb42a5766130141da8a1d0c6840e29c|chore: Add vercel.json to fix routing issues
+57752f2a7ab74d72778a4bdd6295055f91bbe0bd|feat: Add GET handler for webhook debugging
+e9019437c03cc5fbb77f69a807f6e0bbb16e18de|fix: Simplify Flask route for Vercel webhook
+fdbb1967d970ad80427d58b0eb482e5bd94e5030|fix: Rename bot entrypoint for Vercel deployment
+71c82b3eefadd607d0dd7bd868849d791d26d82d|feat: Add Telegram bot to trigger on-demand reports
+0678ff884414c3049975ff515cdd8d1e5f0808db|feat: Adjust monitoring workflow schedule to run daily at 23:00 BRT
+afe29f35a3b33c1949389f0c2a8d6c90c2950027|Update scrape.yml
+8b15d118090407460bbf65d4d2dc92a77c269b99|Update client_monitor_supabase.py
+b40383b8a79c766deeeab75e1aad115b2cbb8270|Update cleanup_database.py
+eed93ac0ae4f235b6167d4d819375651b2873758|Update vite.config.ts
+fde1ab96ced08a6632d068f99bba32d5feef8564|Update README.md
+d2fcb41b38511f86bfbd16c66254516bca873ff6|Update README.md
+70c711878c481c6993b97e2c8ea94e0ea76f97b7|refactor(frontend): Altera cálculo de tempo de atraso para ser em tempo real
+a781d446c36179625e3ac9fa7dd1ec5e993baa0a|Update README.md
+89a47dde5fe076341ab0077b6a0d9a561a9f2abe|Update scrape.yml
+9d201b5a4b183a1847e28597f3ad4a70ecc7ab11|feat(frontend): Melhora a exibição do tempo de atraso
+361d17ffc32c79167614daa8efc3a92cf3c38eec|feat: Add back button to DailyExecutions page
+10784cc50a88ed4bb3e796819515b0bc100953c1|feat: Add daily executions page and link from dashboard
+06e3447934f98a5c7b78c7867a7d51d424f11218|fix(ci): Add clean node_modules and playwright install to deploy workflow
+129c406d86ea68a43085d192a180050cf4491b47|feat: Add missing utils.ts and update gitignore
+8026710a25ad6a1f14328bafb58118026a49fc44|fix(ci): Correct cache dependency path in deploy workflow
+9ed12515c488b95093ff289ec99299b9478fdb64|fix(ci): Correct paths in GitHub Actions workflows
+23b938b350e0582afda49b1b92315259af7301d5|feat: Revisa dashboard, corrige bugs e atualiza dependências
+f6b8030a5422b2c660e4f3efa0796bdd635b0e41|docs: adicionar resumo das correções realizadas nos workflows
+dea44356c3cb0341444e47ebc4f3d001363cf5fb|fix: corrigir caminhos nos workflows do GitHub Actions e documentar alterações
+bba8c159a3d9bf2ce4a0066d44cc2762490a4e9a|docs: atualizar README.md principal com documentação completa do projeto
+49ef5425e2baa293cede2139d18f1193b8f65ed2|feat: implementar backend Python com workflows GitHub Actions - Scripts de análise, limpeza e monitoramento Supabase - Workflows automatizados para execução a cada 3h, limpeza mensal e análise semanal - Ambiente de desenvolvimento configurado com scripts de setup - Documentação completa do backend
+e019fc652150cb7dd5b927691f8dbaee6898d20f|feat: Migração completa para GitHub Pages - Fase 1 concluída
+6447225debaa598591ee0fc431cefab71b407663|Configurar editor SQL
+516d371273602433df5a3f6fa7d7c75ba8e35f79|Connect to Supabase project
+5bb0710794320049a377e28d4847c78b3f3aff3e|Add web system for statistics
+99485878c9a0c289f66d59e3d214326288a51928|Use tech stack vite_react_shadcn_ts_20250728_minor

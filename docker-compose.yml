@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # ---------------
+  # Backend (Python)
+  # ---------------
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: store_dashboard_backend
+    restart: always
+    # Se precisar de variáveis de ambiente do Python (ex: TELEGRAM_TOKEN), 
+    # elas podem ser passadas aqui futuramente num arquivo .env
+    env_file:
+      - .env
+    # ---------------
+    # Frontend (Vite/React)
+    # ---------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: store_dashboard_frontend
+    ports:
+      - "8080:80" # Porta 80 do container direcionada para a porta 8080 local
+    restart: always
+
+# OBSERVAÇÃO:
+# O Supabase é acessado via URL externa, 
+# então não precisamos subir um container de banco de dados aqui.
