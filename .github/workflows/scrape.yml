@@ -1,28 +1,56 @@
 name: Client Monitor MD Supabase
+
 on:
   workflow_dispatch:
   repository_dispatch:
     types: [executar_mdonline]
+
   schedule:
-    # Executa a cada 3 horas (8x/dia) - otimizado para economizar minutos do plano gratuito
-    - cron: '0 */3 * * *'
-    # Limpeza mensal do banco (primeiro dia do mês às 02:00 UTC)
-    - cron: '0 2 1 * *'
+    # Executa 2 min antes da hora cheia a cada 3h (UTC)
+    # Ex: 02:58, 05:58, 08:58...
+    - cron: '58 */3 * * *'
+
+    # Limpeza mensal às 02:00 horário de Brasília
+    # 02:00 BRT = 05:00 UTC
+    - cron: '0 5 1 * *'
 
 jobs:
+
+  # =====================================================
+  # 🏪 MONITORAMENTO DE CLIENTES
+  # =====================================================
+
   monitor-lojas:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Timeout reduzido (com cache, execução leva ~2-3 min)
-    
+    if: github.event.schedule != '0 5 1 * *'
+    timeout-minutes: 15
+
+    env:
+      TZ: America/Sao_Paulo
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+      GITHUB_ACTIONS: true
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      GERAR_EXCEL: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      - name: Check System Time
+        run: |
+          echo "UTC time:"
+          date -u
+          echo "Local time (Sao Paulo):"
+          date
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -36,12 +64,12 @@ jobs:
             libgbm-dev \
             libxss-dev \
             libasound2-dev
-      
+
       - name: Cache pip dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -50,46 +78,30 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('**/requirements.txt') }}
-      
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('backend/requirements.txt') }}
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
         working-directory: backend
-          
+
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: |
-          playwright install chromium
-          
+        run: playwright install chromium
+
       - name: Verify Supabase connection
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
           python -c "
           import os
           from supabase import create_client
-          try:
-              supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
-              response = supabase.table('clientes').select('count').execute()
-              print('✅ Conexão com Supabase OK')
-          except Exception as e:
-              print(f'❌ Erro na conexão com Supabase: {e}')
-              exit(1)
+          supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
+          supabase.table('clientes').select('id').limit(1).execute()
+          print('✅ Conexão com Supabase OK')
           "
         working-directory: backend
-          
+
       - name: Run monitor script
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
-          GITHUB_ACTIONS: true
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GERAR_EXCEL: true
         run: python client_monitor_supabase.py
         working-directory: backend
 
@@ -99,21 +111,17 @@ jobs:
           if [ -f "log_extracao.log" ]; then
             echo "📊 Últimas linhas do log:"
             tail -20 log_extracao.log
-            
-            # Verificar se houve erros críticos
             if grep -q "CRITICAL\|ERROR" log_extracao.log; then
-              echo "⚠️ Erros encontrados no log"
+              echo "⚠️ Erros encontrados"
               exit 1
-            else
-              echo "✅ Execução concluída sem erros críticos"
             fi
           else
             echo "❌ Log não encontrado"
             exit 1
           fi
         working-directory: backend
-      
-      - name: Upload logs as artifacts
+
+      - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -121,110 +129,89 @@ jobs:
           path: |
             backend/log_extracao.log
             backend/relatorio_*.xlsx
-          retention-days: 30
-          
+          retention-days: 15
+
       - name: Cleanup temporary files
         if: always()
         run: |
-          # Remove arquivos temporários para liberar espaço
           rm -f relatorio_*.xlsx
           rm -f *.png
-          echo "🧹 Arquivos temporários removidos"
         working-directory: backend
 
-  # Job para limpeza mensal do banco
+
+  # =====================================================
+  # 🧹 LIMPEZA MENSAL DO BANCO
+  # =====================================================
+
   limpeza-banco:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 2 1 * *'  # Só executa na limpeza mensal
-    
+    if: github.event.schedule == '0 5 1 * *'
+    timeout-minutes: 10
+
+    env:
+      TZ: America/Sao_Paulo
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      - name: Check System Time
+        run: |
+          echo "UTC time:"
+          date -u
+          echo "Local time (Sao Paulo):"
+          date
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
-      - name: Install Python dependencies
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
         working-directory: backend
-      
-      - name: Run database cleanup
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
-        run: |
-          python -c "
-          import os
-          from supabase import create_client
-          from datetime import datetime, timedelta
-          
-          try:
-              supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
-              
-              # Data limite: 30 dias atrás
-              data_limite = (datetime.now() - timedelta(days=30)).isoformat()
-              
-              # Limpar dados antigos das tabelas
-              print('🧹 Iniciando limpeza mensal do banco...')
-              
-              # Limpar execuções antigas
-              response = supabase.table('execucoes').delete().lt('executado_em', data_limite).execute()
-              print(f'🗑️ Execuções antigas removidas: {len(response.data) if response.data else 0}')
-              
-              # Limpar dados de lojas antigos
-              response = supabase.table('lojas_dados').delete().lt('data_coleta', data_limite).execute()
-              print(f'🗑️ Dados de lojas antigos removidos: {len(response.data) if response.data else 0}')
-              
-              # Limpar métricas antigas
-              response = supabase.table('metricas_periodicas').delete().lt('data_referencia', data_limite).execute()
-              print(f'🗑️ Métricas antigas removidas: {len(response.data) if response.data else 0}')
-              
-              print('✅ Limpeza mensal concluída com sucesso!')
-              
-          except Exception as e:
-              print(f'❌ Erro na limpeza: {e}')
-              exit(1)
-          "
-      
-      - name: Notify cleanup completion
-        if: always()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
-        run: |
-          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
-            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
-              -d chat_id="$ADMIN_CHAT_ID" \
-              -d text="🧹 **Limpeza Mensal do Banco Concluída**%0A%0A✅ Dados antigos (30+ dias) foram removidos%0A💾 Espaço liberado no banco de dados%0A🕐 **Executado em:** $(date +'%d/%m/%Y às %H:%M:%S UTC')" \
-              -d parse_mode="Markdown"
-          fi
 
-  # Job adicional para monitoramento de saúde
+      - name: Run cleanup script
+        run: python cleanup_database.py
+        working-directory: backend
+
+      - name: Upload cleanup logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanup-logs-${{ github.run_number }}
+          path: |
+            backend/limpeza_banco.log
+            backend/relatorio_limpeza_banco.json
+          retention-days: 30
+
+
+  # =====================================================
+  # 🚨 HEALTH CHECK
+  # =====================================================
+
   health-check:
     runs-on: ubuntu-latest
     needs: [monitor-lojas, limpeza-banco]
     if: always()
-    
+
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+
     steps:
       - name: Notify on failure
         if: failure()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
         run: |
-          STATUS="❌ FALHA"
-          MESSAGE="O workflow de monitoramento encontrou um erro. Verifique os logs para mais detalhes."
-          
-          # Enviar notificação para admin
-          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$ADMIN_CHAT_ID" ]; then
-            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
-              -d chat_id="$ADMIN_CHAT_ID" \
-              -d text="🤖 **GitHub Actions - Alerta de Falha**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Horário:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-              -d parse_mode="Markdown"
-          fi
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+            -d chat_id="$ADMIN_CHAT_ID" \
+            -d text="🚨 GitHub Actions - Falha no workflow.
+Horário: $(date +'%d/%m/%Y %H:%M:%S UTC')
+Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -d parse_mode="Markdown"
