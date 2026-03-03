@@ -213,6 +213,6 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
             -d chat_id="$ADMIN_CHAT_ID" \
             -d text="🚨 GitHub Actions - Falha no workflow.
-Horário: $(date +'%d/%m/%Y %H:%M:%S UTC')
-Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            Horário: $(date +'%d/%m/%Y %H:%M:%S UTC')
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -d parse_mode="Markdown"
