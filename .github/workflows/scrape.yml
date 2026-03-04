@@ -6,10 +6,10 @@ on:
     types: [executar_mdonline]
 
   schedule:
-    # Executa 2 min antes da hora cheia a cada 3h, sincronizado com horário de Brasília (BRT = UTC-3)
-    # BRT: 23:58, 02:58, 05:58, 08:58, 11:58, 14:58, 17:58, 20:58
-    # UTC: 02:58, 05:58, 08:58, 11:58, 14:58, 17:58, 20:58, 23:58
-    - cron: '58 2,5,8,11,14,17,20,23 * * *'
+    # Executa no minuto 47 a cada 3h para fugir do congestionamento do horário cheio (minuto 0)
+    # BRT (UTC-3): 23:47, 02:47, 05:47, 08:47, 11:47, 14:47, 17:47, 20:47
+    # UTC: 02:47, 05:47, 08:47, 11:47, 14:47, 17:47, 20:47, 23:47
+    - cron: '47 2,5,8,11,14,17,20,23 * * *'
 
     # Limpeza mensal às 02:00 horário de Brasília
     # 02:00 BRT = 05:00 UTC
