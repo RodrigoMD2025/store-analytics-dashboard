@@ -6,10 +6,11 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 
 ### Backend e Automação
 - 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda
-- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada 30 minutos
-- ☁️ **Deploy Moderno:** Infraestrutura containerizada com Docker na Railway
+- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada 3 horas (otimizado no GitHub Actions)
+- ☁️ **Deploy Moderno:** Infraestrutura containerizada com Docker pronta para Railway ou VPS local
 - 📈 **Análise e Armazenamento:** Dados processados e armazenados no Supabase
 - 🔔 **Notificações Inteligentes:** Balanço diário e relatórios sob demanda
+- 🔐 **Segurança Aprimorada:** Suporte nativo ao novo modelo Supabase Publishable API Key
 
 ### Dashboard Web (NOVO! 🎉)
 - 🖥️ **Interface Moderna:** Dashboard React com TypeScript e Tailwind CSS
@@ -126,7 +127,10 @@ store-analytics-dashboard/
 │   └── requirements.txt
 ├── .github/workflows/
 │   └── scrape.yml                  # Workflow de coleta
+├── docs/                           # Guias detalhados (Docker, Actions, etc)
 ├── Dockerfile
+├── docker-compose.yml              # Orquestração local com Docker
+├── .env.example                    # Template de variáveis (sem segredos expostos)
 └── README.md
 ```
 
@@ -178,10 +182,11 @@ store-analytics-dashboard/
 - `SUPABASE_KEY`: Chave `service_role` do Supabase
 
 #### Frontend (Dashboard)
-Crie `.env.local` na pasta `frontend/`:
+A melhor maneira de rodar localmente é copiar o arquivo `.env.example` da raiz para a extensão `.env` e preenchê-lo (inclusive tem instruções para o Backend).
+Como alternativa, você pode criar `.env.local` na pasta `frontend/`:
 ```env
 VITE_SUPABASE_URL=sua_url_do_supabase
-VITE_SUPABASE_ANON_KEY=sua_chave_publica_anon_supabase
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua_chave_aqui
 ```
 
 ### **2. Estrutura do Banco de Dados (Supabase)**
@@ -222,7 +227,25 @@ https://api.telegram.org/bot<SEU_TOKEN>/setWebhook?url=
 
 ## 🚀 Execução Local
 
-### **Backend**
+### **Método Recomendado: Docker Compose 🐳**
+
+A maneira mais prática (e rápida) de subir todo o sistema (Frontend + Backend) simultaneamente é usando o Docker. O projeto conta com um arquivo orquestrador unificado.
+
+1. Configure as variáveis de ambiente copiando o arquivo `.env.example` como `.env` (na raiz) e insira suas credenciais.
+2. No seu terminal, rodando a partir da raiz do projeto, execute:
+```bash
+docker compose up -d --build
+```
+3. Aguarde o *build* finalizar. O Dashboard estará disponível e rodando em `http://localhost:8080`.
+4. Para desligar e remover o container futuramente, basta executar `docker compose down`.
+
+*(Veja o guia completo em `docs/PublicandoNoDockerHub.md`)*
+
+---
+
+### **Método Manual (Nativo sem Docker)**
+
+#### **Backend**
 
 ```bash
 cd backend
@@ -411,10 +434,11 @@ npm update
 
 ## 📝 Notas Importantes
 
-1. **Credenciais Supabase:** As chaves estão hardcoded no `frontend/src/integrations/supabase/client.ts` (apenas chave pública ANON)
-2. **RLS (Row Level Security):** Configure políticas adequadas no Supabase para segurança
-3. **Limitações GitHub Pages:** Deploy estático, sem backend
-4. **Dados em Tempo Real:** Dashboard busca dados diretamente do Supabase
+1. **Segurança de Credenciais:** As chaves do projeto foram removidas do código-fonte nativo e migradas para o modelo seguro `.env` usando *Publishable API Key*. Não há mais credenciais *hardcoded* comprometedoras no frontend!
+2. **RLS (Row Level Security):** Configure políticas adequadas em cada tabela no Supabase para a proteção robusta dos seus dados.
+3. **Limitações GitHub Pages:** Deploy nativo via GitHub pages é apenas estático (sem backend). Para o ambiente backend real ou VPS customizada localmente, use o modelo em Docker.
+4. **Dados em Tempo Real:** O Dashboard busca métricas diretamente do Supabase. A lógica é reativa a dados atualizados na base.
+5. **Guias Avançados:** Confira a documentação da pasta `docs/` para dominar temas como `OtimizacaoGitHubActions.md` (o que economiza minutos absurdos do seu action gratuito).
 
 ---
 
