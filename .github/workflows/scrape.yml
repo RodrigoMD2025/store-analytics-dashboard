@@ -88,8 +88,8 @@ jobs:
         working-directory: backend
 
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: playwright install chromium
+        run: python -m playwright install chromium
+        working-directory: backend
 
       - name: Verify Supabase connection
         run: |
