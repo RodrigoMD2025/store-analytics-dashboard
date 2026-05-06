@@ -5,6 +5,7 @@ Executa remoções em lotes para evitar timeout e envia resumo via Telegram.
 """
 
 import os
+import sys
 import time
 import json
 import logging
@@ -143,15 +144,19 @@ def gerar_relatorio_limpeza(estatisticas):
 def main():
     inicio = time.time()
     logging.info("🚀 Iniciando limpeza otimizada do banco de dados...")
+
     supabase = init_supabase()
     if not supabase:
-        return
+        logging.critical("❌ Conexão com Supabase falhou. Abortando limpeza.")
+        sys.exit(1)
+
+    houve_falha = False
 
     estatisticas = {
         "execucoes": limpar_em_lotes(supabase, "execucoes", "executado_em", 30, "execuções"),
         "lojas": limpar_em_lotes(supabase, "lojas_dados", "data_coleta", 30, "dados de lojas"),
         "metricas": limpar_em_lotes(supabase, "metricas_periodicas", "data_referencia", 30, "métricas"),
-        "logs": limpar_em_lotes(supabase, "logs", "created_at", 7, "logs do sistema"),
+        "logs": limpar_em_lotes(supabase, "logs_execucao", "executado_em", 7, "logs do sistema"),
     }
 
     relatorio = gerar_relatorio_limpeza(estatisticas)
@@ -175,8 +180,13 @@ def main():
         enviar_mensagem_telegram(mensagem)
         logging.info("🏁 Limpeza concluída e notificada.")
     else:
+        houve_falha = True
         enviar_mensagem_telegram("⚠️ *Falha ao gerar relatório de limpeza do banco.*")
         logging.error("⚠️ Falha ao gerar relatório.")
+
+    if houve_falha:
+        logging.critical("❌ Limpeza concluída com erros críticos.")
+        sys.exit(1)
 
 # ======================================
 if __name__ == "__main__":
