@@ -1,38 +1,38 @@
 name: Analyze Supabase Tables
 
 on:
-  workflow_dispatch:  # Execução manual
+  workflow_dispatch: # Execução manual
   schedule:
     # Análise semanal (domingo às 06:00 UTC)
-    - cron: '0 6 * * 0'
+    - cron: "0 6 * * 0"
 
 jobs:
   analyze-tables:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
         working-directory: backend
-      
+
       - name: Run Supabase analysis
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python analyze_supabase.py
         working-directory: backend
-      
+
       - name: Upload analysis report
         if: always()
         uses: actions/upload-artifact@v4
@@ -42,7 +42,7 @@ jobs:
             backend/relatorio_analise_supabase.json
             backend/analise_supabase.log
           retention-days: 90
-      
+
       - name: Notify analysis completion
         if: always()
         env:
@@ -57,7 +57,7 @@ jobs:
               STATUS="❌ ANÁLISE FALHOU"
               MESSAGE="Falha na geração do relatório de análise"
             fi
-            
+
             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
               -d chat_id="$ADMIN_CHAT_ID" \
               -d text="🔍 **Análise Supabase - Status**%0A%0A$STATUS%0A$MESSAGE%0A%0A🕐 **Executado em:** $(date +'%d/%m/%Y às %H:%M:%S UTC')%0A🔗 **Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
