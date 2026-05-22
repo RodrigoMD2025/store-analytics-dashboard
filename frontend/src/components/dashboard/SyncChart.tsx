@@ -44,31 +44,33 @@ export function SyncChart({ data }: SyncChartProps) {
 
   if (data.total === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">
+      <div className="flex items-center justify-center h-72 text-muted-foreground">
         <p>Nenhum dado disponível</p>
       </div>
     );
   }
 
   return (
-    <div className="h-64">
+    <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={100}
-            paddingAngle={2}
+            innerRadius={65}
+            outerRadius={110}
+            paddingAngle={3}
             dataKey="value"
+            animationBegin={0}
+            animationDuration={800}
           >
             {chartData.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
                 fill={index === 0 ? COLORS.sincronizadas : COLORS.atrasadas}
                 stroke="hsl(var(--background))"
-                strokeWidth={2}
+                strokeWidth={3}
               />
             ))}
           </Pie>

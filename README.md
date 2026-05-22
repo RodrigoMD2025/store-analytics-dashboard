@@ -12,9 +12,10 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 - 🔔 **Notificações Inteligentes:** Balanço diário e relatórios sob demanda
 - 🔐 **Segurança Aprimorada:** Suporte nativo ao novo modelo Supabase Publishable API Key
 
-### Dashboard Web (NOVO! 🎉)
+### Dashboard Web
 - 🖥️ **Interface Moderna:** Dashboard React com TypeScript e Tailwind CSS
-- 📊 **Visualização de Dados:** Gráficos interativos e tabelas dinâmicas
+- 📊 **Visualização de Dados:** Gráficos interativos (Recharts) e tabelas dinâmicas
+- 📈 **Análises Estatísticas:** Gráfico de atividade por hora e tendência de sincronização
 - 🎯 **Monitoramento de Players:** Integração completa com Music Delivery Player
 - 🔍 **Detalhes do Player:** Página dedicada com informações completas de sincronização
 - 🌓 **Modo Escuro/Claro:** Alternância de tema com persistência (melhorado!)
@@ -23,14 +24,22 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 - 🔎 **Busca Inteligente:** Filtro em tempo real na tabela de clientes
 - 📄 **Paginação Automática:** Ativa quando > 50 clientes para melhor performance
 - 📥 **Exportação CSV:** Exporte resumos por cliente ou detalhes de lojas individuais
+- 🏥 **Saúde do Sistema:** Cards com status online/offline e saúde das execuções
+- 🎨 **Taxa de Sucesso por Níveis:** Badges coloridos (Ruim/Regular/Bom/Ótimo) com legenda
 
-#### **Novas Funcionalidades da Tabela** (Nov 2024)
+#### **Tabela de Resumo por Cliente**
 
-**Vista de Resumo por Cliente:**
-- Tabela agregada quando nenhum filtro está ativo
-- Mostra: Total de Lojas | Sincronizadas | Atrasadas | Taxa de Sucesso
+**Vista Agregada:**
+- Tabela com Total de Lojas | Sincronizadas | Atrasadas | Taxa de Sucesso
 - Ordenação automática por número de lojas
 - Click na linha filtra para aquele cliente
+
+**Badges de Taxa de Sucesso com Cores Graduadas:**
+- 🟢 **Ótimo** (90-100%): Badge verde (success)
+- 🔵 **Bom** (75-89%): Badge azul (secondary)
+- 🟡 **Regular** (50-74%): Badge laranja (warning)
+- 🔴 **Ruim** (0-49%): Badge vermelho (destructive)
+- Legenda visual com bolinhas coloridas acima da tabela
 
 **Busca e Filtro:**
 - Campo de busca em tempo real
@@ -365,7 +374,7 @@ npm run build
 
 ## 🎨 Funcionalidades do Dashboard
 
-### **Tabela de Resumo por Cliente** (Novo!)
+### **Tabela de Resumo por Cliente**
 
 Quando nenhum filtro está ativo, a tabela mostra:
 
@@ -382,6 +391,26 @@ Quando nenhum filtro está ativo, a tabela mostra:
 - ✅ Ordenação por total de lojas
 - ✅ Click para drill-down
 - ✅ Exportação CSV
+
+### **Gráficos de Análise** (Novos!)
+
+**Atividade por Hora:**
+- 📊 BarChart com distribuição das atualizações das lojas ao longo do dia (0-23h)
+- Apenas o status mais recente de cada loja é considerado
+- Filtra automaticamente pelo cliente selecionado no dropdown
+
+**Tendência de Sincronização:**
+- 📈 LineChart com evolução do percentual de sincronização nos últimos 7 dias
+- Média diária consolidada de todos os clientes (ou do cliente filtrado)
+
+**Lojas Online / Offline:**
+- 🟢 Online: lojas com atualização há menos de 24h
+- 🟡 Atenção: lojas com atualização entre 24h-72h
+- 🔴 Crítica: lojas sem atualização há mais de 72h
+
+**Saúde das Execuções:**
+- ✅ Total de execuções nos últimos 7 dias
+- Distribuição por status: sucesso, erro, sem dados
 
 ### **Integração Music Delivery Player**
 

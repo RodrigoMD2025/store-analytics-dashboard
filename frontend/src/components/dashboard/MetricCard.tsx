@@ -38,16 +38,22 @@ export function MetricCard({
 
   return (
     <Card className={cn(
-      "relative overflow-hidden transition-all hover:shadow-md",
+      "relative overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 card-hover-effect",
       variantStyles[variant]
     )}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <div className={cn(
+        "absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none",
+        variant === "success" && "bg-gradient-to-t from-accent/5 to-transparent",
+        variant === "danger" && "bg-gradient-to-t from-destructive/5 to-transparent",
+        variant === "warning" && "bg-gradient-to-t from-warning/5 to-transparent",
+      )} />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
         <Icon className={cn("h-4 w-4", iconStyles[variant])} />
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         <div className="text-2xl font-bold text-foreground">
           {value}
         </div>

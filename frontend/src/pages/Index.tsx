@@ -6,9 +6,13 @@ import { ClienteSelect } from "@/components/dashboard/ClienteSelect";
 import { RecentLogs } from "@/components/dashboard/RecentLogs";
 import { LojasTable } from "@/components/dashboard/LojasTable";
 import { ClienteSummaryTable } from "@/components/dashboard/ClienteSummaryTable";
+import { HourlyActivityChart } from "@/components/dashboard/HourlyActivityChart";
+import { SyncTrendChart } from "@/components/dashboard/SyncTrendChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useStoreAnalytics } from "@/hooks/useStoreAnalytics";
 import {
   Store,
   CheckCircle,
@@ -16,12 +20,17 @@ import {
   TrendingUp,
   Activity,
   Calendar,
-  Users
+  Users,
+  Wifi
 } from "lucide-react";
 
 const Index = () => {
   const [selectedCliente, setSelectedCliente] = useState<string | null>(null);
   const { stats, clientes, logs, lojas, loading } = useDashboardData(selectedCliente);
+  const selectedClienteNome = selectedCliente
+    ? clientes.find(c => c.id === selectedCliente)?.nome || null
+    : null;
+  const analytics = useStoreAnalytics(7, selectedClienteNome);
 
   if (loading) {
     return (
@@ -101,7 +110,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="grid gap-6">
           {/* Filtros */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between animate-fade-in">
             <ClienteSelect
               clientes={clientes}
               selectedCliente={selectedCliente}
@@ -113,7 +122,7 @@ const Index = () => {
           </div>
 
           {/* Métricas principais */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 animate-fade-in">
             <MetricCard
               title="Total de Lojas"
               value={stats.totalLojas.toLocaleString('pt-BR')}
@@ -147,8 +156,20 @@ const Index = () => {
             />
           </div>
 
+          {/* Análises estatísticas */}
+          <div className="grid gap-6 md:grid-cols-2 animate-fade-in">
+            <HourlyActivityChart
+              data={analytics.hourlyDistribution}
+              loading={analytics.loading}
+            />
+            <SyncTrendChart
+              data={analytics.syncTrend}
+              loading={analytics.loading}
+            />
+          </div>
+
           {/* Gráficos e logs */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 animate-fade-in">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -177,8 +198,8 @@ const Index = () => {
             <LojasTable lojas={lojas} />
           )}
 
-          {/* Estatísticas adicionais */}
-          <div className="grid gap-4 md:grid-cols-3">
+          {/* Saúde do Sistema */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 animate-fade-in">
             <MetricCard
               title="Execuções Hoje"
               value={stats.executacoesHoje}
@@ -195,13 +216,73 @@ const Index = () => {
               variant="default"
             />
 
-            <MetricCard
-              title="Última Execução"
-              value="Recente"
-              subtitle={stats.ultimaExecucao}
-              icon={Activity}
-              variant="default"
-            />
+            <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Lojas Online / Offline
+                </CardTitle>
+                <Wifi className="h-4 w-4 text-accent" />
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-foreground">
+                    {analytics.onlineOfflineRatio.online}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    / {analytics.onlineOfflineRatio.total}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-1">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {analytics.loading ? '...' : `${Math.round((analytics.onlineOfflineRatio.online / Math.max(analytics.onlineOfflineRatio.total, 1)) * 100)}% online`}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-destructive" />
+                    <span className="text-xs text-muted-foreground">
+                      {analytics.onlineOfflineRatio.offline} crítica
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Saúde das Execuções
+                </CardTitle>
+                <Activity className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-foreground">
+                    {analytics.executionHealth.total}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    execuções (7d)
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0 h-5">
+                    ✅ {analytics.executionHealth.success}
+                  </Badge>
+                  <Badge variant="destructive" className="text-xs px-1.5 py-0 h-5">
+                    ❌ {analytics.executionHealth.error}
+                  </Badge>
+                  {analytics.executionHealth.noData > 0 && (
+                    <Badge variant="outline" className="text-xs px-1.5 py-0 h-5">
+                      ⏸️ {analytics.executionHealth.noData}
+                    </Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

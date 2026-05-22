@@ -4,7 +4,22 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { TrendingUp, ChevronRight, Download, Search, ChevronLeft, ChevronsLeft, ChevronRight as ChevronRightIcon, ChevronsRight } from "lucide-react";
+
+const TAXA_TIERS = [
+  { max: 49, label: "Ruim", variant: "destructive" as const, color: "bg-destructive" },
+  { max: 74, label: "Regular", variant: "warning" as const, color: "bg-warning" },
+  { max: 89, label: "Bom", variant: "secondary" as const, color: "bg-primary/60" },
+  { max: 100, label: "Ótimo", variant: "success" as const, color: "bg-accent" },
+];
+
+function getTier(taxa: number) {
+  if (taxa <= 49) return TAXA_TIERS[0];
+  if (taxa <= 74) return TAXA_TIERS[1];
+  if (taxa <= 89) return TAXA_TIERS[2];
+  return TAXA_TIERS[3];
+}
 
 interface LojaData {
     id: string;
@@ -182,6 +197,15 @@ export function ClienteSummaryTable({ lojas, onClienteClick }: ClienteSummaryTab
             </CardHeader>
 
             <CardContent>
+                <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+                    <span className="font-medium">Legenda:</span>
+                    {TAXA_TIERS.map(tier => (
+                        <div key={tier.label} className="flex items-center gap-1.5">
+                            <div className={cn("w-2.5 h-2.5 rounded-full", tier.color)} />
+                            <span>{tier.label}</span>
+                        </div>
+                    ))}
+                </div>
                 <div className="rounded-md border">
                     <Table>
                         <TableHeader>
@@ -195,42 +219,39 @@ export function ClienteSummaryTable({ lojas, onClienteClick }: ClienteSummaryTab
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {displayedSummaries.map((cliente) => (
-                                <TableRow
-                                    key={cliente.clienteNome}
-                                    className="cursor-pointer hover:bg-muted/50"
-                                    onClick={() => onClienteClick?.(cliente.clienteNome)}
-                                >
-                                    <TableCell className="font-medium">{cliente.clienteNome}</TableCell>
-                                    <TableCell className="text-center">{cliente.totalLojas}</TableCell>
-                                    <TableCell className="text-center">
-                                        <span className="text-green-600 dark:text-green-400 font-medium">
-                                            {cliente.lojasSincronizadas}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <span className="text-red-600 dark:text-red-400 font-medium">
-                                            {cliente.lojasAtrasadas}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <Badge
-                                            variant={
-                                                cliente.taxaSucesso === 100 ? "success" :
-                                                    cliente.taxaSucesso >= 70 ? "warning" :
-                                                        "destructive"
-                                            }
-                                        >
-                                            {cliente.taxaSucesso}%
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                            <ChevronRight className="h-4 w-4" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {displayedSummaries.map((cliente) => {
+                                const tier = getTier(cliente.taxaSucesso);
+                                return (
+                                    <TableRow
+                                        key={cliente.clienteNome}
+                                        className="cursor-pointer hover:bg-muted/50"
+                                        onClick={() => onClienteClick?.(cliente.clienteNome)}
+                                    >
+                                        <TableCell className="font-medium">{cliente.clienteNome}</TableCell>
+                                        <TableCell className="text-center">{cliente.totalLojas}</TableCell>
+                                        <TableCell className="text-center">
+                                            <span className="text-green-600 dark:text-green-400 font-medium">
+                                                {cliente.lojasSincronizadas}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            <span className="text-red-600 dark:text-red-400 font-medium">
+                                                {cliente.lojasAtrasadas}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            <Badge variant={tier.variant}>
+                                                {cliente.taxaSucesso}%
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </div>
