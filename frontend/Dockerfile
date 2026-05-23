@@ -14,8 +14,14 @@ RUN npm install
 # Copiar o resto do código do frontend
 COPY . .
 
-# Injetar variável para forçar o base do React a ser a raiz "/"
+# ARGs passados via --build-arg para injetar variáveis VITE_ no build
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_PUBLISHABLE_KEY
+
+# Injetar variáveis para o build do React
 ENV VITE_BASE_PATH=/
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
 # Fazer o build de produção (gera a pasta /app/dist)
 RUN npm run build
 

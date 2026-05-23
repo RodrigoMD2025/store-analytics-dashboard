@@ -53,6 +53,7 @@ Usar tags de versão é fundamental para manter o controle do que está rodando 
 |--------|------|-------------|
 | `v1` | 2026-02-26 | Primeira versão funcional com Docker |
 | `v2` | 2026-03-02 | Migração para Supabase Publishable API Key (segurança) |
+| `v3` | 2026-05-23 | Merge das mudanças do `main` (analytics charts, RLS, badges) e build Docker |
 
 ### O que acontece ao usar a mesma tag?
 Se você fizer `docker push` com uma tag que já existe (ex: `:v2`), ela **sobrescreve** a anterior automaticamente. Não precisa remover nada manualmente.
