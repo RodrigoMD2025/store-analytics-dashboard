@@ -121,11 +121,15 @@ store-analytics-dashboard/
 │   │   ├── hooks/
 │   │   │   ├── useDashboardData.ts
 │   │   │   ├── usePlayerMonitoring.ts
-│   │   │   └── usePlayerDetails.ts  # (NOVO)
+│   │   │   ├── usePlayerDetails.ts  # (NOVO)
+│   │   │   └── useAuth.tsx          # (NOVO) Autenticação Supabase
 │   │   ├── pages/
 │   │   │   ├── Index.tsx           # Página principal
 │   │   │   ├── PlayerDetails.tsx    # Detalhes do player (NOVO)
-│   │   │   └── DailyExecutions.tsx
+│   │   │   ├── DailyExecutions.tsx
+│   │   │   └── Login.tsx           # (NOVO) Tela de login
+│   │   ├── components/auth/
+│   │   │   └── ProtectedRoute.tsx  # (NOVO) Guarda de rotas
 │   │   ├── integrations/supabase/
 │   │   └── App.tsx
 │   ├── package.json
@@ -197,6 +201,25 @@ Como alternativa, você pode criar `.env.local` na pasta `frontend/`:
 VITE_SUPABASE_URL=sua_url_do_supabase
 VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua_chave_aqui
 ```
+
+### **1.1 Autenticação de Usuários (Dashboard)**
+
+O dashboard é protegido por **login com e-mail e senha** via **Supabase Auth**. Sem uma sessão ativa, o usuário é redirecionado para a tela de login (`/#/login`).
+
+**Criar um usuário de acesso** (não existe cadastro público):
+
+1. Acesse o painel do Supabase > **Authentication** > **Users**
+2. Clique em **"Add user"** > **"Create new user"**
+3. Informe e-mail e senha do usuário autorizado
+4. O usuário já poderá fazer login no dashboard
+
+> **Importante:** Antes de aplicar, execute a migration `supabase/migrations/20250804000000_require_auth_for_reads.sql` no Supabase (SQL Editor). Ela revoga a leitura pública (`anon`) e passa a exigir usuário autenticado (`authenticated`) para acessar as tabelas do dashboard.
+
+**Como funciona:**
+- Frontend: `supabase.auth.signInWithPassword()` + persistência de sessão em `localStorage`
+- Rotas protegidas via componente `ProtectedRoute` (`frontend/src/components/auth/ProtectedRoute.tsx`)
+- Logout via `supabase.auth.signOut()` (botão de sair no cabeçalho do dashboard)
+- Backend (GitHub Actions Python) continua usando `SUPABASE_KEY` (service_role), que ignora RLS
 
 ### **2. Estrutura do Banco de Dados (Supabase)**
 

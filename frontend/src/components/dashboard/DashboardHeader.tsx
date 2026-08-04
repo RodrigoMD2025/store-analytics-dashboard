@@ -1,6 +1,9 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { BarChart3, Zap } from "lucide-react";
+import { BarChart3, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardHeaderProps {
   totalClientes: number;
@@ -8,6 +11,12 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ totalClientes, ultimaAtualizacao }: DashboardHeaderProps) {
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="border-b border-border bg-gradient-to-r from-background via-background to-background/80 sticky top-0 z-10 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-4">
@@ -43,6 +52,16 @@ export function DashboardHeader({ totalClientes, ultimaAtualizacao }: DashboardH
               </span>
               Online
             </Badge>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="h-9 w-9"
+              title={`Sair${user?.email ? ` (${user.email})` : ""}`}
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
