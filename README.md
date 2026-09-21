@@ -1,64 +1,131 @@
 # 📊 Dashboard de Análise e Monitoramento - Music Delivery
 
-Sistema completo para monitoramento de lojas, players Music Delivery e coleta de dados com bot interativo no Telegram. O projeto combina backend em Python, automação com GitHub Actions, bot hospedado na Railway e **dashboard web React** para visualização de dados em tempo real.
+> Sistema de monitoramento e análise de dados desenvolvido para acompanhar a sincronização de lojas e Music Delivery Players, transformar dados operacionais em indicadores e facilitar a identificação de ocorrências.
+
+## 🎯 Problema de Negócio
+
+O acompanhamento da sincronização das lojas era dependente de consultas e verificações manuais. Com uma quantidade crescente de clientes, lojas e players, esse processo dificultava:
+
+- identificar rapidamente lojas com problemas de sincronização;
+- acompanhar quais clientes apresentavam maior quantidade de ocorrências;
+- visualizar a evolução dos indicadores ao longo do tempo;
+- consultar informações detalhadas de um player específico;
+- gerar relatórios consolidados para acompanhamento operacional.
+
+O principal desafio era transformar informações técnicas dos players em **dados estruturados e indicadores que pudessem apoiar o acompanhamento da operação e a tomada de decisão**.
+
+## 💡 Solução Desenvolvida
+
+Foi desenvolvido um sistema completo de coleta, processamento, armazenamento, análise e visualização dos dados.
+
+```text
+Music Delivery Players
+        ↓
+Coleta automatizada
+        ↓
+Python + Playwright
+        ↓
+Processamento e análise
+        ↓
+Supabase / PostgreSQL
+        ↓
+Dashboard React
+        ↓
+Indicadores e relatórios
+```
+
+A solução automatiza a coleta dos dados e disponibiliza as informações em um dashboard que permite analisar a operação por cliente, loja e player.
+
+## 📊 Indicadores e Análises
+
+O sistema transforma os dados coletados em indicadores como:
+
+- total de lojas monitoradas;
+- lojas sincronizadas e atrasadas;
+- taxa de sincronização por cliente;
+- evolução da sincronização ao longo dos dias;
+- atividade dos players por horário;
+- players online, em atenção ou em situação crítica;
+- histórico de execuções e falhas;
+- arquivos ausentes por player.
+
+Isso permite sair de uma análise baseada apenas em consultas individuais e passar para uma **visão consolidada da operação**.
+
+## 📈 Resultado
+
+A solução centraliza os dados de monitoramento e reduz a necessidade de consultas manuais para acompanhar a situação dos clientes e lojas.
+
+Entre os ganhos proporcionados pelo projeto:
+
+- 🔎 maior visibilidade sobre a situação dos players;
+- 📊 indicadores consolidados por cliente;
+- ⚡ acesso mais rápido às informações operacionais;
+- 📈 acompanhamento histórico da sincronização;
+- 🚨 identificação de situações que necessitam de atenção;
+- 📥 geração de relatórios e exportação dos dados para análise.
+
+> **Nota:** os resultados acima descrevem ganhos observáveis do sistema. Não são apresentados percentuais de ganho de produtividade sem uma medição formal do processo antes e depois da implementação.
+
+---
 
 ## 🚀 Funcionalidades Principais
 
 ### Backend e Automação
-- 🤖 **Bot Interativo (Telegram):** Acione a coleta de dados e receba relatórios sob demanda
-- ⌛ **Coleta de Dados Contínua:** Sistema roda automaticamente a cada 3 horas (otimizado no GitHub Actions)
-- ☁️ **Deploy Moderno:** Infraestrutura containerizada com Docker pronta para Railway ou VPS local
-- 📈 **Análise e Armazenamento:** Dados processados e armazenados no Supabase
-- 🔔 **Notificações Inteligentes:** Balanço diário e relatórios sob demanda
-- 🔐 **Segurança Aprimorada:** Suporte nativo ao novo modelo Supabase Publishable API Key
+
+- 🤖 **Bot Interativo (Telegram):** acione a coleta de dados e receba relatórios sob demanda
+- ⌛ **Coleta de Dados Contínua:** sistema executado automaticamente por meio do GitHub Actions
+- ☁️ **Deploy:** infraestrutura containerizada com Docker, preparada para Railway ou VPS
+- 📈 **Análise e Armazenamento:** dados processados e armazenados no Supabase
+- 🔔 **Notificações:** balanço diário e relatórios sob demanda
+- 🔐 **Segurança:** suporte ao modelo atual de Publishable API Key do Supabase
 
 ### Dashboard Web
-- 🖥️ **Interface Moderna:** Dashboard React com TypeScript e Tailwind CSS
-- 📊 **Visualização de Dados:** Gráficos interativos (Recharts) e tabelas dinâmicas
-- 📈 **Análises Estatísticas:** Gráfico de atividade por hora e tendência de sincronização
-- 🎯 **Monitoramento de Players:** Integração completa com Music Delivery Player
-- 🔍 **Detalhes do Player:** Página dedicada com informações completas de sincronização
-- 🌓 **Modo Escuro/Claro:** Alternância de tema com persistência (melhorado!)
-- 📱 **Responsivo:** Interface adaptativa para desktop e mobile
-- ⚡ **Navegação Intuitiva:** Click no Player ID abre detalhes completos
-- 🔎 **Busca Inteligente:** Filtro em tempo real na tabela de clientes
-- 📄 **Paginação Automática:** Ativa quando > 50 clientes para melhor performance
-- 📥 **Exportação CSV:** Exporte resumos por cliente ou detalhes de lojas individuais
-- 🏥 **Saúde do Sistema:** Cards com status online/offline e saúde das execuções
-- 🎨 **Taxa de Sucesso por Níveis:** Badges coloridos (Ruim/Regular/Bom/Ótimo) com legenda
 
-#### **Tabela de Resumo por Cliente**
+- 🖥️ **Interface Moderna:** React + TypeScript + Tailwind CSS
+- 📊 **Visualização de Dados:** gráficos interativos e tabelas dinâmicas
+- 📈 **Análises Estatísticas:** atividade por hora e tendência de sincronização
+- 🎯 **Monitoramento de Players:** integração com Music Delivery Player
+- 🔍 **Detalhes do Player:** informações completas de sincronização
+- 🌓 **Modo Escuro/Claro:** alternância de tema com persistência
+- 📱 **Responsivo:** interface adaptativa para desktop e mobile
+- ⚡ **Navegação:** acesso aos detalhes a partir do Player ID
+- 🔎 **Busca:** filtro em tempo real na tabela de clientes
+- 📄 **Paginação:** ativada automaticamente quando há mais de 50 clientes
+- 📥 **Exportação CSV:** exportação de resumos e detalhes para análise
+- 🏥 **Saúde do Sistema:** indicadores de status e execução
+- 🎨 **Taxa de Sucesso:** classificação visual dos níveis de sincronização
 
-**Vista Agregada:**
-- Tabela com Total de Lojas | Sincronizadas | Atrasadas | Taxa de Sucesso
-- Ordenação automática por número de lojas
-- Click na linha filtra para aquele cliente
+---
 
-**Badges de Taxa de Sucesso com Cores Graduadas:**
-- 🟢 **Ótimo** (90-100%): Badge verde (success)
-- 🔵 **Bom** (75-89%): Badge azul (secondary)
-- 🟡 **Regular** (50-74%): Badge laranja (warning)
-- 🔴 **Ruim** (0-49%): Badge vermelho (destructive)
-- Legenda visual com bolinhas coloridas acima da tabela
+## 🔎 Como os Dados são Utilizados
 
-**Busca e Filtro:**
-- Campo de busca em tempo real
-- Contador dinâmico de resultados
-- Reset automático de paginação ao buscar
+O projeto não se limita à coleta de informações. Os dados passam por diferentes etapas até se transformarem em indicadores:
 
-**Paginação Inteligente:**
-- Ativa automaticamente quando > 50 clientes
-- 20 itens por página
-- Controles: Primeira | Anterior | Próxima | Última
-- Indicador: "Mostrando X-Y de Z clientes"
+### 1. Coleta
 
-**Exportação CSV:**
-- **Resumo Geral:** Exporta tabela de clientes com estatísticas
-  - Arquivo: `resumo-clientes-YYYY-MM-DD.csv`
-- **Detalhes por Cliente:** Exporta lojas individuais quando filtrado
-  - Arquivo: `detalhes-lojas-{cliente}-YYYY-MM-DD.csv`
-- UTF-8 BOM para compatibilidade com Excel
-- Dados formatados com aspas para campos complexos
+Informações dos players são coletadas automaticamente por scripts Python utilizando Playwright.
+
+### 2. Processamento
+
+Os dados são tratados e estruturados para permitir consultas, consolidações e análises.
+
+### 3. Armazenamento
+
+As informações são persistidas no Supabase/PostgreSQL em tabelas específicas para monitoramento, clientes, arquivos e execuções.
+
+### 4. Análise
+
+Os dados são utilizados para calcular indicadores de sincronização, identificar atrasos, acompanhar tendências e analisar a atividade dos players.
+
+### 5. Visualização
+
+Os resultados são disponibilizados em um dashboard React para facilitar a interpretação das informações.
+
+### 6. Acompanhamento
+
+Relatórios podem ser consultados pelo dashboard ou recebidos por meio do Telegram.
+
+---
 
 ## 🏗️ Arquitetura e Funcionamento
 
@@ -66,84 +133,239 @@ Sistema completo para monitoramento de lojas, players Music Delivery e coleta de
 
 O sistema opera de duas formas principais:
 
-1.  **Execução Agendada (a cada hora):**
-    *   Workflow do **GitHub Actions** (`scrape.yml`) executado automaticamente
-    *   Script `client_monitor_supabase.py` coleta e salva dados no **Supabase**
-    *   Às 23h, relatório consolidado é enviado para o **Telegram**
+#### 1. Execução Agendada
 
-2.  **Execução Manual (via Telegram):**
-    *   Comando `/mdonline` enviado ao bot
-    *   Bot na **Railway** (`bot.py`) dispara o workflow via API
-    *   Relatório enviado imediatamente após a coleta
+- Workflow do **GitHub Actions** (`scrape.yml`) executado automaticamente;
+- Script `client_monitor_supabase.py` coleta e salva dados no **Supabase**;
+- relatório consolidado pode ser enviado ao **Telegram** em horário programado.
 
-### Dashboard Frontend (NOVO!)
+#### 2. Execução Manual via Telegram
 
-O dashboard web permite visualização e monitoramento em tempo real:
+- comando `/mdonline` enviado ao bot;
+- bot hospedado na **Railway** dispara o workflow via API;
+- relatório é enviado após a coleta.
 
-- **Página Principal (`/`)**:
-  - Overview geral com métricas de lojas
-  - Gráficos de sincronização
-  - **Tabela de Resumo:** Vista agregada por cliente (padrão)
-    - Busca em tempo real
-    - Paginação automática (>50 clientes)
-    - Exportação CSV do resumo
-  - **Tabela Detalhada:** Lojas individuais quando cliente selecionado
-    - Exportação CSV das lojas
-  - **Link direto** no Player ID para detalhes
+### Fluxo de Dados
 
-- **Detalhes do Player (`/player/:uid`)**:
-  - Métricas de sincronização (Music e Sazonal)
-  - Status da playlist (Sincronizada/Atrasada)
-  - Total de spots ativos
-  - **Lista completa** de arquivos por pasta:
-    - 📁 Playlist Principal (music)
-    - 📅 Pasta Sazonal
-    - 📻 Pasta Spots
-  - Informações do sistema (UID, CNPJ formatado, arquivos faltantes)
-
-- **Execuções Diárias (`/daily-executions`)**:
-  - Histórico de execuções
-  - Logs detalhados
-
-### Estrutura de Arquivos
-
+```text
+                    ┌──────────────────────┐
+                    │ Music Delivery Player│
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Python + Playwright  │
+                    │ Coleta automatizada  │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Processamento        │
+                    │ Python + Pandas      │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Supabase/PostgreSQL  │
+                    │ Dados estruturados   │
+                    └──────────┬───────────┘
+                               │
+                  ┌────────────┴────────────┐
+                  ▼                         ▼
+       ┌──────────────────┐       ┌──────────────────┐
+       │ Dashboard React  │       │ Telegram Bot     │
+       │ Indicadores      │       │ Relatórios       │
+       └──────────────────┘       └──────────────────┘
 ```
+
+---
+
+## 📊 Dashboard
+
+### Página Principal (`/`)
+
+A página principal apresenta uma visão consolidada da operação:
+
+- overview geral das métricas;
+- gráficos de sincronização;
+- tabela de resumo por cliente;
+- busca em tempo real;
+- paginação automática;
+- exportação CSV;
+- acesso aos detalhes das lojas.
+
+### Tabela de Resumo por Cliente
+
+A tabela apresenta uma visão agregada:
+
+| Cliente | Total de Lojas | Lojas Sincronizadas | Lojas Atrasadas | Taxa de Sucesso |
+|---------|----------------|----------------------|-----------------|-----------------|
+| Cliente A | 40 | 35 | 5 | 88% |
+| Cliente B | 10 | 10 | 0 | 100% |
+| Cliente C | 4 | 2 | 2 | 50% |
+
+> Os valores acima são apenas exemplos de apresentação.
+
+### Funcionalidades da Tabela
+
+- busca em tempo real por nome;
+- contador dinâmico de resultados;
+- paginação automática acima de 50 clientes;
+- 20 itens por página;
+- ordenação por quantidade de lojas;
+- drill-down para detalhes;
+- exportação CSV.
+
+### Exportação CSV
+
+**Resumo Geral:**
+
+```text
+resumo-clientes-YYYY-MM-DD.csv
+```
+
+**Detalhes por Cliente:**
+
+```text
+detalhes-lojas-{cliente}-YYYY-MM-DD.csv
+```
+
+Os arquivos são preparados em UTF-8 BOM para facilitar a abertura no Excel.
+
+---
+
+## 📈 Gráficos de Análise
+
+### Atividade por Hora
+
+BarChart com a distribuição das atualizações das lojas ao longo do dia, considerando o intervalo de 0 a 23 horas.
+
+O gráfico pode ser filtrado pelo cliente selecionado.
+
+### Tendência de Sincronização
+
+LineChart com a evolução do percentual de sincronização nos últimos 7 dias.
+
+Pode apresentar:
+
+- média consolidada;
+- visão por cliente quando aplicado o filtro.
+
+### Lojas Online / Offline
+
+Classificação baseada no tempo desde a última atualização:
+
+- 🟢 **Online:** atualização há menos de 24h
+- 🟡 **Atenção:** atualização entre 24h e 72h
+- 🔴 **Crítica:** sem atualização há mais de 72h
+
+### Saúde das Execuções
+
+Apresenta:
+
+- total de execuções recentes;
+- distribuição por status;
+- execuções com sucesso;
+- execuções com erro;
+- execuções sem dados.
+
+---
+
+## 🎯 Monitoramento do Music Delivery Player
+
+O dashboard possui integração com os dados do Music Delivery Player para acompanhamento de:
+
+- sincronização de Music;
+- sincronização de conteúdo sazonal;
+- sincronização de Spots;
+- arquivos existentes;
+- arquivos ausentes;
+- status da playlist;
+- informações do sistema;
+- identificação do player;
+- CNPJ formatado;
+- histórico de execução.
+
+### Detalhes do Player
+
+Rota:
+
+```text
+/player/:uid
+```
+
+A página apresenta:
+
+- métricas de sincronização;
+- status da playlist;
+- total de spots ativos;
+- lista completa de arquivos;
+- arquivos ausentes;
+- informações do sistema;
+- identificação do cliente e loja.
+
+---
+
+## 📅 Execuções Diárias
+
+Rota:
+
+```text
+/daily-executions
+```
+
+Apresenta:
+
+- histórico das execuções;
+- status de cada execução;
+- logs detalhados;
+- acompanhamento do processo de coleta.
+
+---
+
+## 📁 Estrutura de Arquivos
+
+```text
 store-analytics-dashboard/
-├── frontend/                      # Dashboard React + TypeScript
+├── frontend/                         # Dashboard React + TypeScript
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── dashboard/         # Componentes do dashboard
-│   │   │   │   ├── ClienteSummaryTable.tsx  # Tabela de resumo (NOVO)
-│   │   │   │   ├── LojasTable.tsx           # Tabela de detalhes
+│   │   │   ├── dashboard/
+│   │   │   │   ├── ClienteSummaryTable.tsx
+│   │   │   │   ├── LojasTable.tsx
 │   │   │   │   └── ...
-│   │   │   ├── players/           # Componentes de players (NOVO)
-│   │   │   └── ui/                # Componentes UI (shadcn/ui)
+│   │   │   ├── players/
+│   │   │   └── ui/
 │   │   ├── hooks/
 │   │   │   ├── useDashboardData.ts
 │   │   │   ├── usePlayerMonitoring.ts
-│   │   │   ├── usePlayerDetails.ts  # (NOVO)
-│   │   │   └── useAuth.tsx          # (NOVO) Autenticação Supabase
+│   │   │   ├── usePlayerDetails.ts
+│   │   │   └── useAuth.tsx
 │   │   ├── pages/
-│   │   │   ├── Index.tsx           # Página principal
-│   │   │   ├── PlayerDetails.tsx    # Detalhes do player (NOVO)
+│   │   │   ├── Index.tsx
+│   │   │   ├── PlayerDetails.tsx
 │   │   │   ├── DailyExecutions.tsx
-│   │   │   └── Login.tsx           # (NOVO) Tela de login
+│   │   │   └── Login.tsx
 │   │   ├── components/auth/
-│   │   │   └── ProtectedRoute.tsx  # (NOVO) Guarda de rotas
+│   │   │   └── ProtectedRoute.tsx
 │   │   ├── integrations/supabase/
 │   │   └── App.tsx
 │   ├── package.json
 │   └── vite.config.ts
+│
 ├── backend/
-│   ├── client_monitor_supabase.py   # Script de coleta
-│   ├── bot.py                      # Bot Telegram
+│   ├── client_monitor_supabase.py    # Script de coleta
+│   ├── bot.py                        # Bot Telegram
 │   └── requirements.txt
+│
 ├── .github/workflows/
-│   └── scrape.yml                  # Workflow de coleta
-├── docs/                           # Guias detalhados (Docker, Actions, etc)
+│   ├── scrape.yml                    # Coleta automatizada
+│   └── deploy.yml                    # Deploy do frontend
+│
+├── docs/                             # Documentação complementar
 ├── Dockerfile
-├── docker-compose.yml              # Orquestração local com Docker
-├── .env.example                    # Template de variáveis (sem segredos expostos)
+├── docker-compose.yml
+├── .env.example
 └── README.md
 ```
 
@@ -151,353 +373,493 @@ store-analytics-dashboard/
 
 ## 🛠️ Stack Tecnológica
 
-### **Backend & Automação**
-- **Python 3.11+** para processamento de dados e bot
-- **Playwright** para web scraping automatizado
-- **Pandas** para análise e manipulação de dados
-- **Docker** para containerização
-- **GitHub Actions** para CI/CD e automação
+### Backend e Dados
 
-### **Infraestrutura**
-- **Railway** para hospedagem do bot (Long Polling)
-- **Supabase** como banco de dados (PostgreSQL) e backend
-- **GitHub Pages** para hospedagem do dashboard (produção)
+- **Python 3.11+** — coleta, processamento e automação
+- **Playwright** — automação e coleta de dados
+- **Pandas** — tratamento, transformação e análise de dados
+- **Supabase** — armazenamento e backend
+- **PostgreSQL** — banco de dados
 
-### **Frontend (Dashboard)**
-- **React 18** com **TypeScript**
-- **Vite** para desenvolvimento rápido
-- **Tailwind CSS** para estilização
-- **shadcn/ui** para componentes de UI
-- **Recharts** para gráficos e visualizações
-- **React Router** para navegação
-- **React Query** para gerenciamento de dados
-- **date-fns** para formatação de datas
+### Automação e Infraestrutura
+
+- **GitHub Actions** — execução automatizada dos processos
+- **Docker** — containerização
+- **Railway** — hospedagem do bot
+- **GitHub Pages** — hospedagem do dashboard
+
+### Frontend
+
+- **React 18**
+- **TypeScript**
+- **Vite**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **Recharts**
+- **React Router**
+- **React Query**
+- **date-fns**
+
+### Comunicação
+
+- **Telegram Bot API** — acionamento e envio de relatórios
+
+---
+
+## 🔐 Segurança
+
+O projeto utiliza variáveis de ambiente para evitar exposição de credenciais no código-fonte.
+
+Exemplo:
+
+```env
+SUPABASE_URL=sua_url
+SUPABASE_KEY=sua_chave
+TELEGRAM_BOT_TOKEN=seu_token
+ADMIN_CHAT_ID=seu_chat_id
+```
+
+### Autenticação do Dashboard
+
+O dashboard utiliza autenticação por e-mail e senha através do Supabase Auth.
+
+Sem uma sessão autenticada, o usuário é redirecionado para:
+
+```text
+/#/login
+```
+
+A autenticação utiliza:
+
+```text
+supabase.auth.signInWithPassword()
+```
+
+As rotas protegidas utilizam o componente:
+
+```text
+ProtectedRoute
+```
+
+O logout é realizado por:
+
+```text
+supabase.auth.signOut()
+```
+
+> O acesso ao dashboard deve ser combinado com políticas adequadas de Row Level Security (RLS) no Supabase.
+
+---
+
+## 🗄️ Estrutura do Banco de Dados
+
+O sistema utiliza tabelas para organizar diferentes conjuntos de informações:
+
+- **`lojas_dados`** — informações das lojas cadastradas
+- **`monitoring_status`** — status de sincronização dos players
+- **`music_files`** — arquivos de música por pasta
+- **`clientes`** — informações dos clientes
+- **`execucoes`** — histórico das execuções
+- **`logs_execucao`** — logs detalhados do processamento
+
+Essa separação permite organizar os dados coletados e utilizá-los posteriormente para consultas, indicadores e análises.
 
 ---
 
 ## ⚙️ Instalação e Configuração
 
-### **Pré-requisitos**
+### Pré-requisitos
 
 - Conta no GitHub
-- Conta na [Railway](https://railway.app/)
-- Conta no [Supabase](https://supabase.com/)
-- Bot do Telegram (via [BotFather](https://t.me/botfather))
-- Node.js 18+ e Python 3.11+ instalados localmente
+- Conta na Railway
+- Conta no Supabase
+- Bot do Telegram criado via BotFather
+- Node.js 18+
+- Python 3.11+
+- Docker e Docker Compose, caso utilize a execução containerizada
 
-### **1. Variáveis de Ambiente**
+---
 
-#### Backend & Bot
-- `TELEGRAM_BOT_TOKEN`: Token do bot (BotFather)
-- `AUTHORIZED_CHAT_ID`: ID do chat no Telegram
-- `GITHUB_TOKEN`: Personal Access Token com permissão `repo`
-- `SUPABASE_URL`: URL do projeto Supabase
-- `SUPABASE_KEY`: Chave `service_role` do Supabase
+## 1. Variáveis de Ambiente
 
-#### Frontend (Dashboard)
-A melhor maneira de rodar localmente é copiar o arquivo `.env.example` da raiz para a extensão `.env` e preenchê-lo (inclusive tem instruções para o Backend).
-Como alternativa, você pode criar `.env.local` na pasta `frontend/`:
+Copie o arquivo de exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Configure as variáveis necessárias.
+
+### Backend
+
 ```env
-VITE_SUPABASE_URL=sua_url_do_supabase
-VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua_chave_aqui
+TELEGRAM_BOT_TOKEN=seu_token
+AUTHORIZED_CHAT_ID=seu_chat_id
+GITHUB_TOKEN=seu_token
+SUPABASE_URL=sua_url
+SUPABASE_KEY=sua_chave
 ```
 
-### **1.1 Autenticação de Usuários (Dashboard)**
+### Frontend
 
-O dashboard é protegido por **login com e-mail e senha** via **Supabase Auth**. Sem uma sessão ativa, o usuário é redirecionado para a tela de login (`/#/login`).
+Na pasta `frontend/`, pode ser utilizado:
 
-**Criar um usuário de acesso** (não existe cadastro público):
-
-1. Acesse o painel do Supabase > **Authentication** > **Users**
-2. Clique em **"Add user"** > **"Create new user"**
-3. Informe e-mail e senha do usuário autorizado
-4. O usuário já poderá fazer login no dashboard
-
-> **Importante:** Antes de aplicar, execute a migration `supabase/migrations/20250804000000_require_auth_for_reads.sql` no Supabase (SQL Editor). Ela revoga a leitura pública (`anon`) e passa a exigir usuário autenticado (`authenticated`) para acessar as tabelas do dashboard.
-
-**Como funciona:**
-- Frontend: `supabase.auth.signInWithPassword()` + persistência de sessão em `localStorage`
-- Rotas protegidas via componente `ProtectedRoute` (`frontend/src/components/auth/ProtectedRoute.tsx`)
-- Logout via `supabase.auth.signOut()` (botão de sair no cabeçalho do dashboard)
-- Backend (GitHub Actions Python) continua usando `SUPABASE_KEY` (service_role), que ignora RLS
-
-### **2. Estrutura do Banco de Dados (Supabase)**
-
-O sistema utiliza as seguintes tabelas:
-
-- **`lojas_dados`**: Informações das lojas cadastradas
-- **`monitoring_status`**: Status de sincronização dos players
-- **`music_files`**: Arquivos de música por pasta (music, sazonal, spots)
-- **`clientes`**: Dados dos clientes
-- **`execucoes`**: Histórico de execuções
-- **`logs_execucao`**: Logs detalhados
-
-### **3. Configuração do GitHub Secrets**
-
-No repositório GitHub, vá em `Settings > Secrets and variables > Actions`:
-
-- `SUPABASE_URL`
-- `SUPABASE_KEY`
-- `TELEGRAM_BOT_TOKEN`
-- `ADMIN_CHAT_ID`
-
-### **4. Deploy do Bot na Railway**
-
-1. Crie projeto a partir do repositório GitHub
-2. Adicione variáveis na aba **"Variables"**
-3. Deixe **"Start Command"** vazio (usa Dockerfile)
-4. Deploy automático
-
-### **5. Configuração do Telegram**
-
-Remova webhooks existentes:
+```env
+VITE_SUPABASE_URL=sua_url
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua_chave
 ```
-https://api.telegram.org/bot<SEU_TOKEN>/setWebhook?url=
+
+> Nunca publique tokens, senhas ou chaves privadas no repositório.
+
+---
+
+## 2. Autenticação de Usuários
+
+No Supabase:
+
+1. Acesse **Authentication > Users**.
+2. Selecione **Add user**.
+3. Crie o usuário autorizado.
+4. Configure as políticas de acesso das tabelas.
+
+Antes de utilizar em produção, verifique a migration:
+
+```text
+supabase/migrations/20250804000000_require_auth_for_reads.sql
+```
+
+A intenção é impedir leituras públicas e exigir autenticação para acesso aos dados do dashboard.
+
+---
+
+## 3. GitHub Secrets
+
+No repositório:
+
+```text
+Settings
+→ Secrets and variables
+→ Actions
+```
+
+Configure:
+
+```text
+SUPABASE_URL
+SUPABASE_KEY
+TELEGRAM_BOT_TOKEN
+ADMIN_CHAT_ID
 ```
 
 ---
 
-## 🚀 Execução Local
+## 4. Deploy do Bot na Railway
 
-### **Método Recomendado: Docker Compose 🐳**
+1. Crie um projeto a partir do repositório GitHub.
+2. Configure as variáveis de ambiente.
+3. Utilize o Dockerfile do projeto.
+4. Execute o deploy.
+5. Verifique os logs da aplicação.
 
-A maneira mais prática (e rápida) de subir todo o sistema (Frontend + Backend) simultaneamente é usando o Docker. O projeto conta com um arquivo orquestrador unificado.
+---
 
-1. Configure as variáveis de ambiente copiando o arquivo `.env.example` como `.env` (na raiz) e insira suas credenciais.
-2. No seu terminal, rodando a partir da raiz do projeto, execute:
+## 5. Configuração do Telegram
+
+O bot permite acionar uma coleta manual por meio do comando:
+
+```text
+/mdonline
+```
+
+Também pode enviar relatórios automaticamente conforme a configuração do workflow.
+
+---
+
+## 🐳 Execução Local com Docker
+
+A maneira mais prática de executar o projeto localmente é utilizando Docker Compose.
+
+Na raiz do projeto:
+
 ```bash
 docker compose up -d --build
 ```
-3. Aguarde o *build* finalizar. O Dashboard estará disponível e rodando em `http://localhost:8080`.
-4. Para desligar e remover o container futuramente, basta executar `docker compose down`.
 
-*(Veja o guia completo em `docs/PublicandoNoDockerHub.md`)*
+Após o build, o dashboard estará disponível em:
+
+```text
+http://localhost:8080
+```
+
+Para interromper:
+
+```bash
+docker compose down
+```
 
 ---
 
-### **Método Manual (Nativo sem Docker)**
+## 🐍 Execução Manual sem Docker
 
-#### **Backend**
+### Backend
 
 ```bash
 cd backend
 
-# Ambiente virtual
 python -m venv venv
-source venv/bin/activate  # ou venv\Scripts\activate no Windows
+source venv/bin/activate
+```
 
-# Dependências
+No Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Instale as dependências:
+
+```bash
 pip install -r requirements.txt
+```
 
-# Execute o bot
+Execute:
+
+```bash
 python bot.py
 ```
 
-### **Frontend**
+### Frontend
 
 ```bash
 cd frontend
-
-# Dependências
 npm install
+```
 
-# Desenvolvimento
+Desenvolvimento:
+
+```bash
 npm run dev
+```
 
-# Produção (build)
+Build:
+
+```bash
 npm run build
+```
 
-# Preview da build
+Preview:
+
+```bash
 npm run preview
 ```
 
-Acesse: `http://localhost:8080`
-
 ---
 
-## 🌐 Deploy do Dashboard (GitHub Pages)
+## 🌐 Deploy do Dashboard no GitHub Pages
 
-### **Configuração do Vite**
-
-O `vite.config.ts` já está configurado para GitHub Pages:
+O Vite utiliza a configuração de `base` correspondente ao nome do repositório:
 
 ```typescript
 export default defineConfig({
-  base: '/store-analytics-dashboard/',  // Nome do seu repositório
-  // ...
+  base: '/store-analytics-dashboard/',
 });
 ```
 
-### **Deploy Automático**
+O workflow de deploy realiza o processo automaticamente.
 
-1. **Commit e Push:**
-   ```bash
-   git add .
-   git commit -m "chore: deploy dashboard to GitHub Pages"
-   git push origin main
-   ```
-
-2. **Configurar GitHub Pages:**
-   - Vá em `Settings > Pages`
-   - Source: `GitHub Actions`
-   - O workflow `.github/workflows/deploy.yml` fará o deploy automaticamente
-
-3. **Acesse:**
-   ```
-   https://[SEU-USUARIO].github.io/store-analytics-dashboard/
-   ```
-
-### **Build Manual**
+### Deploy
 
 ```bash
-cd frontend
-npm run build
-# Arquivos gerados em: frontend/dist/
+git add .
+git commit -m "chore: deploy dashboard"
+git push origin main
 ```
+
+No GitHub:
+
+```text
+Settings
+→ Pages
+→ Source: GitHub Actions
+```
+
+O workflow:
+
+```text
+.github/workflows/deploy.yml
+```
+
+será responsável pelo deploy.
 
 ---
 
 ## 📋 Como Usar
 
-### **Bot Telegram**
-- **Monitoramento Automático:** A cada 30 minutos
-- **Relatório Manual:** `/mdonline` a qualquer momento
-- **Relatório Diário:** Às 23h automaticamente
+### Bot Telegram
 
-### **Dashboard Web**
+O bot pode ser utilizado para:
 
-#### **Navegação Principal**
-1. **Acesse** o dashboard (local ou GitHub Pages)
-2. **Página Principal:**
-   - Visualize métricas gerais
-   - **Vista Padrão:** Tabela de resumo por cliente
-   - **Buscar:** Digite no campo de busca para filtrar clientes
-   - **Exportar Resumo:** Clique em "Exportar CSV" para baixar estatísticas de todos os clientes
-   - **Ver Detalhes:** Clique em uma linha do cliente para ver lojas individuais
+- iniciar uma coleta manual;
+- consultar informações;
+- receber relatórios;
+- acompanhar o resultado das execuções.
 
-#### **Vista Detalhada por Cliente**
-3. **Após selecionar um cliente:**
-   - Vê tabela com lojas individuais
-   - Clique no **Player ID** (botão com ícone de monitor) para detalhes completos
-   - **Exportar Lojas:** Clique em "Exportar CSV" para baixar detalhes das lojas deste cliente
+Comando principal:
 
-#### **Detalhes do Player**
-4. **Detalhes do Player:**
-   - Métricas de sincronização
-   - Status da playlist
-   - Lista completa de arquivos
-   - Informações do sistema
+```text
+/mdonline
+```
 
-#### **Tema**
-5. **Modo Escuro/Claro:**
-   - Clique no ícone Lua/Sol para alternar modo claro/escuro
-   - Tema salvo automaticamente
+### Dashboard
+
+1. Acesse o dashboard.
+2. Faça login.
+3. Consulte as métricas gerais.
+4. Utilize os filtros por cliente.
+5. Analise a taxa de sincronização.
+6. Consulte lojas individualmente.
+7. Acesse os detalhes de cada player.
+8. Exporte os dados quando necessário.
 
 ---
 
-## 🎨 Funcionalidades do Dashboard
+## 🔍 Exemplo de Fluxo de Análise
 
-### **Tabela de Resumo por Cliente**
+Um possível fluxo de utilização do dashboard:
 
-Quando nenhum filtro está ativo, a tabela mostra:
+```text
+Cliente apresenta ocorrência
+        ↓
+Consulta do dashboard
+        ↓
+Identificação das lojas afetadas
+        ↓
+Análise da taxa de sincronização
+        ↓
+Drill-down para o Player
+        ↓
+Verificação dos arquivos/status
+        ↓
+Consulta do histórico de execução
+        ↓
+Identificação de possível causa
+        ↓
+Acompanhamento da sincronização
+```
 
-| Cliente | Total de Lojas | Lojas Sincronizadas | Lojas Atrasadas | Taxa de Sucesso |
-|---------|----------------|---------------------|-----------------|-----------------|
-| Cliente A | 40 | 35 | 5 | 88% |
-| Cliente B | 10 | 10 | 0 | 100% |
-| Cliente C | 4 | 2 | 2 | 50% |
+Esse fluxo demonstra a utilização dos dados para **investigação e acompanhamento operacional**, e não apenas para visualização.
 
-**Funcionalidades:**
-- ✅ Busca em tempo real por nome
-- ✅ Contador de resultados
-- ✅ Paginação automática (>50 clientes)
-- ✅ Ordenação por total de lojas
-- ✅ Click para drill-down
-- ✅ Exportação CSV
+---
 
-### **Gráficos de Análise** (Novos!)
+## 📊 Perspectiva de Dados
 
-**Atividade por Hora:**
-- 📊 BarChart com distribuição das atualizações das lojas ao longo do dia (0-23h)
-- Apenas o status mais recente de cada loja é considerado
-- Filtra automaticamente pelo cliente selecionado no dropdown
+Este projeto foi desenvolvido considerando um fluxo de trabalho de dados:
 
-**Tendência de Sincronização:**
-- 📈 LineChart com evolução do percentual de sincronização nos últimos 7 dias
-- Média diária consolidada de todos os clientes (ou do cliente filtrado)
+```text
+Dados
+  ↓
+Coleta
+  ↓
+Processamento
+  ↓
+Transformação
+  ↓
+Regra de negócio
+  ↓
+Armazenamento
+  ↓
+Indicadores
+  ↓
+Visualização
+  ↓
+Análise
+```
 
-**Lojas Online / Offline:**
-- 🟢 Online: lojas com atualização há menos de 24h
-- 🟡 Atenção: lojas com atualização entre 24h-72h
-- 🔴 Crítica: lojas sem atualização há mais de 72h
-
-**Saúde das Execuções:**
-- ✅ Total de execuções nos últimos 7 dias
-- Distribuição por status: sucesso, erro, sem dados
-
-### **Integração Music Delivery Player**
-
-O dashboard se integra completamente com o Music Delivery Player:
-
-- ✅ Monitoramento em tempo real de sincronização
-- ✅ Status Music, Sazonal e Spots
-- ✅ Lista completa de arquivos (sem limite)
-- ✅ CNPJ formatado (XX.XXX.XXX/YYYY-ZZ)
-- ✅ Arquivos faltantes com texto (N Faixa/Faixas)
-- ✅ Status consistente (Sincronizada/Atrasada)
-- ✅ Navegação por UUID completo
-
-### **Navegação**
-
-- **`/`** - Dashboard principal (resumo ou detalhes por cliente)
-- **`/player/:uid`** - Detalhes do player específico
-- **`/daily-executions`** - Histórico de execuções
-
-### **Tema Escuro/Claro**
-
-- Detecta preferência do sistema automaticamente
-- Salva preferência do usuário (localStorage)
-- Funciona em todas as páginas
-- **Melhorado:** Cards com melhor contraste e sombras no modo escuro
+A aplicação combina automação, tratamento de dados e visualização para transformar informações operacionais em indicadores utilizáveis.
 
 ---
 
 ## 🔧 Manutenção
 
-### **Atualizar Dependências**
+### Atualizar Backend
 
 ```bash
-# Backend
 cd backend
 pip install --upgrade -r requirements.txt
+```
 
-# Frontend
+### Atualizar Frontend
+
+```bash
 cd frontend
 npm update
 ```
 
-### **Verificar Logs**
+### Verificar Logs
 
-- **Railway:** Logs do bot em tempo real
-- **GitHub Actions:** Logs de execução dos workflows
-- **Supabase:** Queries e dados no painel
+- **Railway:** logs do bot;
+- **GitHub Actions:** logs dos workflows;
+- **Supabase:** consultas e dados armazenados;
+- **Dashboard:** indicadores de execução e status.
 
 ---
 
-## 📝 Notas Importantes
+## ⚠️ Limitações e Considerações
 
-1. **Segurança de Credenciais:** As chaves do projeto foram removidas do código-fonte nativo e migradas para o modelo seguro `.env` usando *Publishable API Key*. Não há mais credenciais *hardcoded* comprometedoras no frontend!
-2. **RLS (Row Level Security):** Configure políticas adequadas em cada tabela no Supabase para a proteção robusta dos seus dados.
-3. **Limitações GitHub Pages:** Deploy nativo via GitHub pages é apenas estático (sem backend). Para o ambiente backend real ou VPS customizada localmente, use o modelo em Docker.
-4. **Dados em Tempo Real:** O Dashboard busca métricas diretamente do Supabase. A lógica é reativa a dados atualizados na base.
-5. **Guias Avançados:** Confira a documentação da pasta `docs/` para dominar temas como `OtimizacaoGitHubActions.md` (o que economiza minutos absurdos do seu action gratuito).
+- O GitHub Pages hospeda apenas o frontend estático.
+- O backend deve permanecer hospedado em um ambiente compatível.
+- O funcionamento depende da disponibilidade dos serviços externos utilizados.
+- As classificações de status dependem das regras configuradas para os indicadores.
+- As políticas RLS do Supabase devem ser revisadas antes de um uso em produção.
+- Os valores e limites dos indicadores devem ser ajustados conforme as regras reais da operação.
+
+---
+
+## 🔮 Possíveis Evoluções
+
+Algumas evoluções possíveis para o projeto:
+
+- criação de indicadores adicionais;
+- análises históricas mais longas;
+- alertas automáticos para situações críticas;
+- análise de tendências;
+- integração com outras fontes de dados;
+- criação de métricas de SLA;
+- identificação automática de padrões de ocorrência;
+- evolução do pipeline para uma arquitetura de dados mais robusta.
+
+---
+
+## 🧠 Competências Demonstradas
+
+Este projeto demonstra conhecimentos aplicados em:
+
+- 📊 Análise e visualização de dados
+- 🐍 Python
+- 🐼 Pandas
+- 🗄️ PostgreSQL / Supabase
+- 🔎 Tratamento e consulta de dados
+- 🤖 Automação de processos
+- 🌐 Web scraping
+- 📈 Construção de indicadores
+- 🔄 Pipelines de dados
+- ⚙️ GitHub Actions
+- 🐳 Docker
+- ⚛️ React / TypeScript
+- 🔐 Autenticação e controle de acesso
+- 📱 Integração com APIs
+- 📋 Geração de relatórios
 
 ---
 
 ## 📄 Licença
 
-Este projeto é privado e de uso interno.
+Este projeto é privado e destinado ao uso interno.
 
 ---
 
-**Desenvolvido com ❤️ para Music Delivery**
+## ❤️ Sobre o Projeto
+
+Desenvolvido com foco em **automação, dados e resolução de problemas operacionais**, utilizando tecnologias de software para transformar informações de monitoramento em indicadores e ferramentas de acompanhamento.
+
+**Desenvolvido com ❤️ para Music Delivery.**
